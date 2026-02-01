@@ -1,0 +1,59 @@
+# RUN CONFIG TEMPLATE
+# Copy this file and rename for each run (e.g., fuse_neurology_nov2025.yaml)
+
+#══════════════════════════════════════════════════════════════
+# WHAT AM I SEARCHING FOR?
+#══════════════════════════════════════════════════════════════
+
+# Business type (string)
+# References: /configs/specs/business_types/{business_type}.json
+# Example: neurology clinic | cardiology clinic | orthopedics clinic
+business_type: neurology clinic
+
+#══════════════════════════════════════════════════════════════
+# WHERE AM I SEARCHING?
+#══════════════════════════════════════════════════════════════
+
+# Cities list (array of strings)
+# Format: "City, State, Country" for precise geotargeting
+# Be specific to avoid ambiguity:
+#   ✅ "Atlanta, Georgia, United States" (targets Georgia USA)
+#   ❌ "Georgia" (ambiguous - state or country?)
+cities:
+  - Boston, Massachusetts, United States
+  - San Francisco, California, United States
+  - Atlanta, Georgia, United States
+
+#══════════════════════════════════════════════════════════════
+# WHO IS THIS FOR?
+#══════════════════════════════════════════════════════════════
+
+# Client identifier (string)
+# Creates isolated output folders: /outputs/{client}/
+client: fuse
+
+#══════════════════════════════════════════════════════════════
+# OPTIONAL OVERRIDES (Usually leave commented out)
+#══════════════════════════════════════════════════════════════
+
+# Test mode: Process only first N cities (integer or null)
+# Recommended: Test with 3 first, then run full
+# test_mode: 3
+
+# Resume mode: Skip already-completed cities (boolean)
+# Use after crash/interruption
+# resume: true
+
+# Start from stage: Skip earlier stages (string)
+# Options: search | scrape | classify | export | dedupe
+# start_from: classify
+
+# Max cost limit: Abort if exceeded (integer or null)
+# max_cost_usd: 500
+
+# Concurrency: Threads for scrape/classify (integer)
+# Default: 30 | Range: 10-50
+# concurrency: 30
+
+# Dry run: Preview without executing (boolean)
+# dry_run: true

@@ -1,0 +1,49 @@
+# Environment & secrets
+.env
+*.env.local
+
+# All pipeline outputs (large, generated data)
+**/outputs/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Plan files (temporary)
+PLAN.md
+plan.md
+
+# Nested repos (managed separately)
+people_qualifier_agentic_prod/
+
+# Client data folders (large CSVs, not code)
+CATech/
+Forge/
+layerup/
+poka labs/
+datadasher/
+
+# Large data files
+*.csv
+# But keep small config/template CSVs if needed:
+# !some_template.csv

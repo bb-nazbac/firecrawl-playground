@@ -1,0 +1,112 @@
+# Poka Labs - UK Specialty Chemical/Materials Manufacturers & Distributors
+# Search across 107 major UK cities
+
+client: poka_labs
+
+search:
+  query: "Specialty chemical/materials manufacturers or distributors in {city}"
+  gl: "uk"
+  cities:
+    - London, United Kingdom
+    - Manchester, United Kingdom
+    - Birmingham, United Kingdom
+    - Glasgow, United Kingdom
+    - Southampton, United Kingdom
+    - Liverpool, United Kingdom
+    - Newcastle upon Tyne, United Kingdom
+    - Nottingham, United Kingdom
+    - Sheffield, United Kingdom
+    - Bristol, United Kingdom
+    - Belfast, United Kingdom
+    - Brighton, United Kingdom
+    - Leicester, United Kingdom
+    - Edinburgh, United Kingdom
+    - Bournemouth, United Kingdom
+    - Cardiff, United Kingdom
+    - Coventry, United Kingdom
+    - Leeds, United Kingdom
+    - Middlesbrough, United Kingdom
+    - Stoke-on-Trent, United Kingdom
+    - Reading, United Kingdom
+    - Sunderland, United Kingdom
+    - Preston, United Kingdom
+    - Birkenhead, United Kingdom
+    - Kingston upon Hull, United Kingdom
+    - Newport, United Kingdom
+    - Swansea, United Kingdom
+    - Islington, United Kingdom
+    - Bradford, United Kingdom
+    - Southend-on-Sea, United Kingdom
+    - Luton, United Kingdom
+    - City of Westminster, United Kingdom
+    - Milton Keynes, United Kingdom
+    - Derby, United Kingdom
+    - Bexley, United Kingdom
+    - Plymouth, United Kingdom
+    - Portsmouth, United Kingdom
+    - Northampton, United Kingdom
+    - Archway, United Kingdom
+    - Wolverhampton, United Kingdom
+    - Dudley, United Kingdom
+    - Aberdeen, United Kingdom
+    - Sutton, United Kingdom
+    - Swindon, United Kingdom
+    - Crawley, United Kingdom
+    - Ipswich, United Kingdom
+    - Wigan, United Kingdom
+    - Norwich, United Kingdom
+    - Croydon, United Kingdom
+    - Walsall, United Kingdom
+    - Mansfield, United Kingdom
+    - Warrington, United Kingdom
+    - Slough, United Kingdom
+    - York, United Kingdom
+    - Doncaster, United Kingdom
+    - Poole, United Kingdom
+    - Burnley, United Kingdom
+    - Huddersfield, United Kingdom
+    - Blackpool, United Kingdom
+    - Telford, United Kingdom
+    - Dundee, United Kingdom
+    - Blackburn, United Kingdom
+    - Basildon, United Kingdom
+    - Oxford, United Kingdom
+    - Bolton, United Kingdom
+    - Stockport, United Kingdom
+    - Peterborough, United Kingdom
+    - Gloucester, United Kingdom
+    - West Bromwich, United Kingdom
+    - Grimsby, United Kingdom
+    - Hastings, United Kingdom
+    - High Wycombe, United Kingdom
+    - Cambridge, United Kingdom
+    - Watford, United Kingdom
+    - Saint Peters, United Kingdom
+    - Burton upon Trent, United Kingdom
+    - Colchester, United Kingdom
+    - Eastbourne, United Kingdom
+    - Rotherham, United Kingdom
+    - Cheltenham, United Kingdom
+    - Chesterfield, United Kingdom
+    - Mendip, United Kingdom
+    - Dagenham, United Kingdom
+    - Basingstoke, United Kingdom
+    - Maidstone, United Kingdom
+    - Exeter, United Kingdom
+    - Sutton Coldfield, United Kingdom
+    - Bedford, United Kingdom
+    - Oldham, United Kingdom
+    - Enfield Town, United Kingdom
+    - Woking, United Kingdom
+    - St Helens, United Kingdom
+    - Worcester, United Kingdom
+    - Gillingham, United Kingdom
+    - Chelmsford, United Kingdom
+    - Becontree, United Kingdom
+    - Worthing, United Kingdom
+    - Rochdale, United Kingdom
+    - Solihull, United Kingdom
+    - Royal Leamington Spa, United Kingdom
+  results_per_city: 150
+
+analysis_spec: specialty_chemical_analysis

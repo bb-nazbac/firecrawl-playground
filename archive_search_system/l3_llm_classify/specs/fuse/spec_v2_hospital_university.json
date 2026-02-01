@@ -1,0 +1,177 @@
+{
+  "client": "fuse",
+  "spec_version": "v2",
+  "spec_name": "hospital_university_affiliation",
+  "description": "Neurology clinic classification with hospital and university affiliation detection",
+  "created": "2025-11-06",
+  "model": "claude-sonnet-4-5-20250929",
+
+  "classification_task": {
+    "domain": "neurology clinics",
+    "categories": [
+      {
+        "id": "neurology_clinic_individual",
+        "label": "Individual Neurology Clinic",
+        "description": "Single neurologist practice or standalone clinic"
+      },
+      {
+        "id": "neurology_clinic_group",
+        "label": "Neurology Clinic Group",
+        "description": "Multi-neurologist practice or network of clinics"
+      },
+      {
+        "id": "directory",
+        "label": "Directory Listing",
+        "description": "Website that lists multiple clinics (aggregator, directory)"
+      },
+      {
+        "id": "other",
+        "label": "Other",
+        "description": "Not a neurology clinic (hospital general page, unrelated business, etc.)"
+      }
+    ]
+  },
+
+  "extraction_rules": {
+    "clinic_name": {
+      "type": "string",
+      "required": true,
+      "null_if_not_clinic": true,
+      "instructions": "Extract the official name of the clinic or practice. If not a clinic, return null."
+    },
+    "locations": {
+      "type": "array",
+      "items": "string",
+      "required": false,
+      "instructions": "List of cities or neighborhoods where the clinic has locations. Empty array if none found."
+    },
+    "phone": {
+      "type": "string",
+      "format": "phone_number",
+      "required": false,
+      "instructions": "Primary contact phone number. Null if not found."
+    },
+    "website": {
+      "type": "string",
+      "format": "url",
+      "required": false,
+      "instructions": "Official website URL. Null if not found."
+    }
+  },
+
+  "additional_questions": [
+    {
+      "field": "is_hospital_or_dept",
+      "question": "Is this a hospital or a neurology department within a hospital?",
+      "description": "Identify if this is a hospital facility or a neurology department/unit within a larger hospital system",
+      "answer_schema": {
+        "answer": {
+          "type": "enum",
+          "values": ["yes", "no"],
+          "required": true
+        },
+        "confidence": {
+          "type": "enum",
+          "values": ["high", "medium", "low"],
+          "required": true
+        },
+        "reasoning": {
+          "type": "string",
+          "required": true,
+          "max_length": 200
+        }
+      }
+    },
+    {
+      "field": "university_affiliated",
+      "question": "Is this clinic or hospital affiliated with a university?",
+      "description": "Determine if the clinic/hospital has an affiliation with a university medical school or academic institution (e.g., NYU, UCLA, Harvard)",
+      "answer_schema": {
+        "answer": {
+          "type": "enum",
+          "values": ["yes", "no"],
+          "required": true
+        },
+        "confidence": {
+          "type": "enum",
+          "values": ["high", "medium", "low"],
+          "required": true
+        },
+        "reasoning": {
+          "type": "string",
+          "required": true,
+          "max_length": 200
+        }
+      }
+    }
+  ],
+
+  "prompt_template": {
+    "system_message": "You are a medical data classifier specializing in neurology clinics and healthcare facilities.",
+    "task_description": "TASK: Classify this webpage and extract relevant information about neurology clinics.",
+    "critical_instructions": [
+      "CRITICAL: Respond with PURE JSON ONLY.",
+      "NO markdown code blocks (no ```json)",
+      "NO explanatory text before or after",
+      "ONLY the JSON object as specified below"
+    ],
+    "classification_guidance": "Classify the webpage as one of: {categories}",
+    "extraction_guidance": "If this is a neurology clinic (individual or group), extract the following data: {extraction_fields}",
+    "additional_questions_guidance": "Answer these additional questions: {additional_questions}"
+  },
+
+  "output_schema": {
+    "classification": {
+      "type": "enum",
+      "values": ["neurology_clinic_individual", "neurology_clinic_group", "directory", "other"],
+      "required": true
+    },
+    "confidence": {
+      "type": "enum",
+      "values": ["high", "medium", "low"],
+      "required": true
+    },
+    "reasoning": {
+      "type": "string",
+      "required": true,
+      "max_length": 300
+    },
+    "extracted_data": {
+      "type": "object",
+      "properties": {
+        "clinic_name": {"type": ["string", "null"]},
+        "locations": {"type": "array", "items": "string"},
+        "phone": {"type": ["string", "null"]},
+        "website": {"type": ["string", "null"]}
+      }
+    },
+    "is_hospital_or_dept": {
+      "type": "object",
+      "properties": {
+        "answer": {"type": "enum", "values": ["yes", "no"]},
+        "confidence": {"type": "enum", "values": ["high", "medium", "low"]},
+        "reasoning": {"type": "string"}
+      }
+    },
+    "university_affiliated": {
+      "type": "object",
+      "properties": {
+        "answer": {"type": "enum", "values": ["yes", "no"]},
+        "confidence": {"type": "enum", "values": ["high", "medium", "low"]},
+        "reasoning": {"type": "string"}
+      }
+    }
+  },
+
+  "api_settings": {
+    "model": "claude-sonnet-4-5-20250929",
+    "max_tokens": 1000,
+    "temperature": 0,
+    "timeout_seconds": 60
+  },
+
+  "input_limits": {
+    "markdown_max_chars": 50000,
+    "links_max_count": 100
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "spec_name": "forge_duty_drawback_qualification_nano_v2",
+  "description": "Leaner spec for gpt-5-nano. Fewer tokens, tighter rules.",
+  "version": "nano-v2",
+
+  "critical_questions": ["sells_physical_products", "likely_imports_to_us", "ships_internationally"],
+
+  "waterfall_filter": {"enabled": false},
+
+  "categories": [
+    {"name": "HIGH_CONFIDENCE", "description": "Explicit evidence of imports AND international shipping beyond US/Canada/Mexico."},
+    {"name": "MEDIUM_CONFIDENCE", "description": "Strong import inference + explicit international shipping evidence."},
+    {"name": "DISQUALIFIED", "description": "No physical products, no imports, OR no explicit international shipping proof."}
+  ],
+
+  "extraction_fields": {
+    "company_name": {"type": "string", "required": true, "description": "Company name"},
+    "products_found": {"type": "array", "required": true, "description": "3-5 physical products"},
+    "import_signals": {"type": "string", "required": false, "description": "Import evidence found"},
+    "export_signals": {"type": "string", "required": false, "description": "International shipping evidence"},
+    "industry_category": {"type": "string", "required": true, "description": "Industry: apparel, electronics, tools, other"}
+  },
+
+  "questions": [
+    {
+      "field": "sells_physical_products",
+      "question": "Does this company sell physical products?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "YES: tangible products (apparel, tools, electronics, machinery). NO: software, consulting, digital-only."
+    },
+    {
+      "field": "likely_imports_to_us",
+      "question": "Does this company import goods into the US?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "YES if: 'Made in China/Vietnam/overseas', imports mentioned. YES by inference: apparel/shoes/electronics without 'Made in USA'. NO if: 'Made in USA', print-on-demand, screen printing. NO if: just buying from US distributors."
+    },
+    {
+      "field": "ships_internationally",
+      "question": "Does this company ship to countries OTHER than US/Canada/Mexico?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "REQUIRE EXPLICIT PROOF: 'ships worldwide', shipping page lists Europe/Asia, country selector at checkout. Canada/Mexico ONLY = NO. No shipping info = NO. Do NOT infer."
+    },
+    {
+      "field": "is_brand_owner_or_direct_importer",
+      "question": "Is this company a brand owner or direct importer?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "YES: own brand products, imports directly. NO: buys from US distributors, mainstream retail brands only."
+    },
+    {
+      "field": "products_found",
+      "question": "List 3-5 physical products.",
+      "answer_type": "array",
+      "reasoning_required": false,
+      "evidence_required": true
+    },
+    {
+      "field": "import_signals",
+      "question": "What import evidence was found?",
+      "answer_type": "string",
+      "reasoning_required": false,
+      "evidence_required": true
+    },
+    {
+      "field": "export_signals",
+      "question": "What international shipping evidence was found?",
+      "answer_type": "string",
+      "reasoning_required": false,
+      "evidence_required": true
+    }
+  ],
+
+  "classification_logic": {
+    "description": "Require explicit export evidence to qualify.",
+    "simple_rules": [
+      "Rule 1: If sells_physical_products=false → DISQUALIFIED",
+      "Rule 2: If likely_imports_to_us=false → DISQUALIFIED",
+      "Rule 3: If ships_internationally=false (or no explicit proof) → DISQUALIFIED",
+      "Rule 4: If imports=true AND explicit intl shipping=true → MEDIUM_CONFIDENCE or higher"
+    ],
+    "critical_constraint": "ships_internationally requires EXPLICIT evidence - do not infer."
+  },
+
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 4,
+    "required_questions": ["sells_physical_products", "likely_imports_to_us", "ships_internationally", "is_brand_owner_or_direct_importer"],
+    "min_confidence": "medium",
+    "prompt_addition": "CRITICAL: ships_internationally needs EXPLICIT evidence. Canada/Mexico alone = NO."
+  },
+
+  "page_priority": {
+    "preferred_pages": ["shipping", "international-shipping", "faq", "about", "products"],
+    "keywords_to_hunt": ["made in", "ships worldwide", "international shipping", "country of origin"]
+  },
+
+  "llm": {"model": "gpt-5-nano", "max_tokens": 2000, "temperature": 0}
+}

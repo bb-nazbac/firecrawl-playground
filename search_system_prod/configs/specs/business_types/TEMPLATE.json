@@ -1,0 +1,165 @@
+{
+  "_comment": "BUSINESS TYPE SPEC TEMPLATE",
+  "_instructions": "Copy this file and rename for each business type (e.g., neurology_clinic.json). Remove lines starting with '_' before using.",
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// BUSINESS TYPE IDENTIFICATION": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "business_type": "neurology clinic",
+  "_comment_business_type": "STRING - Name of business type. Used for file naming and display.",
+  "_example_business_type": "neurology clinic | cardiology clinic | orthopedics clinic",
+
+  "description": "Neurology clinics and practices specializing in brain and nervous system disorders",
+  "_comment_description": "STRING - Human-readable description of this business type",
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// SEARCH CONFIGURATION (L1)": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "search": {
+    "query_template": "{business_type} in {city}",
+    "_comment_query": "STRING - Search query template. Use {business_type} and {city} placeholders.",
+    "_example_query": "neurology clinic in {city} | brain specialist in {city}",
+
+    "results_per_city": 100,
+    "_comment_results": "INTEGER - Number of search results to fetch per city (typically 100)",
+    "_example_results": "50 | 100 | 200"
+  },
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// CLASSIFICATION CATEGORIES (L3)": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "categories": [
+    {
+      "id": "individual",
+      "_comment_id": "STRING - Unique identifier (lowercase, no spaces)",
+      "label": "Individual Clinic",
+      "_comment_label": "STRING - Display name",
+      "description": "Single practitioner or solo practice"
+    },
+    {
+      "id": "group",
+      "label": "Group Practice",
+      "description": "Multiple practitioners, one or more locations"
+    },
+    {
+      "id": "department",
+      "label": "Hospital Department",
+      "description": "Department or clinic within a hospital"
+    },
+    {
+      "id": "directory",
+      "label": "Directory/Aggregator",
+      "description": "Website listing multiple clinics (not an actual clinic)"
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "description": "Not a clinic (unrelated business, general hospital page, etc.)"
+    }
+  ],
+  "_comment_categories": "ARRAY - Classification categories. LLM will classify each page into one of these.",
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// EXTRACTION FIELDS (L3)": "",
+  "// Fields to extract from each webpage": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "extraction_fields": {
+    "clinic_name": {
+      "type": "string",
+      "_comment_type": "string | number | boolean | array",
+      "required": true,
+      "_comment_required": "BOOLEAN - Is this field required?",
+      "description": "Official name of the clinic or practice",
+      "_comment_description": "STRING - Instructions for LLM on what to extract"
+    },
+
+    "phone": {
+      "type": "string",
+      "required": false,
+      "description": "Primary contact phone number (format: any, will be normalized later)"
+    },
+
+    "website": {
+      "type": "string",
+      "required": false,
+      "description": "Official website URL (full URL preferred)"
+    },
+
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Full street address (single line format)"
+    },
+
+    "services": {
+      "type": "array",
+      "required": false,
+      "description": "List of services offered (e.g., ['EEG', 'EMG', 'Botox', 'stroke care'])"
+    }
+  },
+  "_comment_extraction_fields": "OBJECT - Fields to extract. Add/remove fields as needed for this business type.",
+  "_example_custom_field": {
+    "accepts_medicare": {
+      "type": "boolean",
+      "required": false,
+      "description": "Does this clinic accept Medicare? Look for explicit mention."
+    }
+  },
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// CLASSIFICATION QUESTIONS (L3)": "",
+  "// Additional yes/no questions for classification": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "questions": [
+    {
+      "field": "hospital_affiliated",
+      "_comment_field": "STRING - Field name in output CSV (lowercase, underscores)",
+      "question": "Is this a hospital or a department/clinic within a hospital?",
+      "_comment_question": "STRING - Question to ask LLM",
+      "answer_type": "boolean",
+      "_comment_answer_type": "boolean | string",
+      "reasoning_required": true,
+      "_comment_reasoning": "BOOLEAN - Should LLM provide reasoning? (always true recommended)",
+      "reasoning_max_length": 200,
+      "_comment_reasoning_max": "INTEGER - Max characters for reasoning"
+    },
+    {
+      "field": "university_affiliated",
+      "question": "Is this clinic or hospital affiliated with a university or medical school?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "reasoning_max_length": 200,
+      "_example_reasoning": "Affiliated with Harvard Medical School",
+      "_example_answer": "true"
+    }
+  ],
+  "_comment_questions": "ARRAY - Yes/no questions with reasoning. Outputs: {field}_affiliated (boolean), {field}_reasoning (string)",
+  "_example_custom_question": {
+    "field": "telemedicine_available",
+    "question": "Does this clinic offer telemedicine or virtual appointments?",
+    "answer_type": "boolean",
+    "reasoning_required": true,
+    "reasoning_max_length": 150
+  },
+
+  "//═════════════════════════════════════════════════════════════════": "",
+  "// LLM CONFIGURATION (L3)": "",
+  "//═════════════════════════════════════════════════════════════════": "",
+
+  "llm": {
+    "model": "claude-sonnet-4-20250514",
+    "_comment_model": "STRING - Claude model to use",
+    "_options_model": "claude-sonnet-4-20250514 | claude-opus-4-20250514",
+
+    "max_tokens": 1500,
+    "_comment_max_tokens": "INTEGER - Maximum tokens in response (1000-2000 typical)",
+
+    "temperature": 0,
+    "_comment_temperature": "NUMBER - Randomness (0 = deterministic, 1 = creative). Use 0 for classification."
+  }
+}

@@ -1,0 +1,16 @@
+# Burnt - NYC Food Distributors (All 5 Boroughs)
+# Search for food/beverage distributors across New York City
+
+client: burnt
+
+search:
+  query: "food distributors in {city}"
+  cities:
+    - New York, New York, United States
+    - Brooklyn, New York, United States
+    - Queens, New York, United States
+    - Bronx, New York, United States
+    - Staten Island, New York, United States
+  results_per_city: 100
+
+analysis_spec: food_distributor_analysis

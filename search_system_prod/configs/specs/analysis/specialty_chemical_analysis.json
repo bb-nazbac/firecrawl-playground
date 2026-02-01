@@ -1,0 +1,83 @@
+{
+  "spec_name": "specialty_chemical_analysis",
+  "description": "Analysis specification for specialty chemical and materials manufacturers/distributors - identifying non-commoditized chemical companies with revenue and customer scale indicators",
+
+  "categories": [
+    {
+      "id": "specialty_chemical",
+      "label": "Specialty Chemical (Accept)",
+      "description": "Company manufactures or distributes non-commoditized, bespoke chemical products that are not traded commodities and don't have price indices"
+    },
+    {
+      "id": "potential_specialty_chemical",
+      "label": "Potential Specialty Chemical (Flag)",
+      "description": "Company may manufacture or distribute specialty chemicals but evidence is unclear or mixed with commodity products"
+    },
+    {
+      "id": "commoditized_chemical",
+      "label": "Commoditized Chemical (Reject)",
+      "description": "Company primarily deals with commoditized chemicals that are traded, have price indices, or are standard bulk chemicals"
+    },
+    {
+      "id": "unrelated",
+      "label": "Unrelated Business (Reject)",
+      "description": "Company is not involved in chemical manufacturing or distribution at all"
+    }
+  ],
+
+  "extraction_fields": {
+    "business_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official name of the company"
+    },
+    "website": {
+      "type": "string",
+      "required": false,
+      "description": "Official website URL"
+    },
+    "phone": {
+      "type": "string",
+      "required": false,
+      "description": "Primary contact phone number"
+    },
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Full street address or business location"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "non_commoditized_chemicals",
+      "question": "Does this company manufacture or distribute non-commoditized chemical products? Non-commoditized chemical products typically means they don't have a price index, they are bespoke/custom, and are not traded commodities. Answer: Accept (clearly non-commoditized), Flag (unclear or mixed), or Reject (commoditized or not chemical-related).",
+      "answer_type": "string",
+      "answer_options": ["Accept", "Flag", "Reject"],
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "revenue_over_25m",
+      "question": "Is this company likely to do more than $25 million in revenue on a yearly basis? Look for evidence like: number of employees (50+ suggests higher revenue), facility size, market presence, customer base, years in business, geographic footprint. Answer: Yes, No, or Insufficient evidence.",
+      "answer_type": "string",
+      "answer_options": ["Yes", "No", "Insufficient evidence"],
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "serves_100plus_customers",
+      "question": "Is this company likely to be serving 100+ customers? Look for evidence like: mentions of customer count, market reach, distribution network, sales team size, product catalog breadth. Answer: Yes, No, or Insufficient evidence.",
+      "answer_type": "string",
+      "answer_options": ["Yes", "No", "Insufficient evidence"],
+      "reasoning_required": true,
+      "evidence_required": true
+    }
+  ],
+
+  "llm": {
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 1500,
+    "temperature": 0
+  }
+}

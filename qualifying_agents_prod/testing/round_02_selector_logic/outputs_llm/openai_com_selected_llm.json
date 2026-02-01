@@ -1,0 +1,72 @@
+{
+  "total_input": 1109,
+  "clean_input": 861,
+  "selections": [
+    {
+      "category_id": "pricing",
+      "urls": [
+        "https://platform.openai.com/settings/organization/billing/overview"
+      ]
+    },
+    {
+      "category_id": "about",
+      "urls": [
+        "https://openai.com/about"
+      ]
+    },
+    {
+      "category_id": "team",
+      "urls": [
+        "https://openai.com/careers"
+      ]
+    },
+    {
+      "category_id": "product",
+      "urls": [
+        "https://openai.com/chatgpt",
+        "https://openai.com/sora"
+      ]
+    },
+    {
+      "category_id": "contact",
+      "urls": [
+        "https://openai.com/contact-sales"
+      ]
+    }
+  ],
+  "raw_response": {
+    "selections": [
+      {
+        "category_id": "pricing",
+        "urls": [
+          "https://platform.openai.com/settings/organization/billing/overview"
+        ]
+      },
+      {
+        "category_id": "about",
+        "urls": [
+          "https://openai.com/about"
+        ]
+      },
+      {
+        "category_id": "team",
+        "urls": [
+          "https://openai.com/careers"
+        ]
+      },
+      {
+        "category_id": "product",
+        "urls": [
+          "https://openai.com/chatgpt",
+          "https://openai.com/sora"
+        ]
+      },
+      {
+        "category_id": "contact",
+        "urls": [
+          "https://openai.com/contact-sales"
+        ]
+      }
+    ]
+  }
+}

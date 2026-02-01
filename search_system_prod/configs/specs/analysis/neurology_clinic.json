@@ -1,0 +1,83 @@
+{
+  "spec_name": "neurology_clinic",
+  "description": "Analysis spec for neurology clinics and practices specializing in brain and nervous system disorders",
+
+  "categories": [
+    {
+      "id": "individual",
+      "label": "Individual Clinic",
+      "description": "Single neurologist or solo practice"
+    },
+    {
+      "id": "group",
+      "label": "Group Practice",
+      "description": "Multiple neurologists, one or more locations"
+    },
+    {
+      "id": "department",
+      "label": "Hospital Department",
+      "description": "Neurology department or clinic within a hospital"
+    },
+    {
+      "id": "directory",
+      "label": "Directory/Aggregator",
+      "description": "Website listing multiple clinics (not an actual clinic)"
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "description": "Not a neurology clinic (unrelated business, general hospital page, etc.)"
+    }
+  ],
+
+  "extraction_fields": {
+    "clinic_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official name of the neurology clinic or practice"
+    },
+    "phone": {
+      "type": "string",
+      "required": false,
+      "description": "Primary contact phone number"
+    },
+    "website": {
+      "type": "string",
+      "required": false,
+      "description": "Official website URL"
+    },
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Full street address"
+    },
+    "services": {
+      "type": "array",
+      "required": false,
+      "description": "List of neurology services offered (e.g., ['EEG', 'EMG', 'Botox for migraines', 'stroke care', 'epilepsy treatment'])"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "hospital_affiliated",
+      "question": "Is this a hospital or a neurology department/clinic within a hospital?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "university_affiliated",
+      "question": "Is this clinic or hospital affiliated with a university or medical school (e.g., Harvard, NYU, UCLA)?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    }
+  ],
+
+  "llm": {
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 1500,
+    "temperature": 0
+  }
+}

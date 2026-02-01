@@ -1,0 +1,17 @@
+# Fuse Neurology Test Run (3 cities)
+# Test pipeline before full 50-city run
+
+client: fuse
+
+search:
+  query: "neurology clinic in {city}"
+  cities:
+    - Boston, Massachusetts, United States
+    - San Francisco, California, United States
+    - Atlanta, Georgia, United States
+  results_per_city: 100
+
+analysis_spec: neurology_clinic
+
+# Test mode: only process first 3 results
+test_mode: 3

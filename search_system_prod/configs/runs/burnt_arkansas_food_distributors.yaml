@@ -1,0 +1,18 @@
+# Burnt - Arkansas Food Distributors
+# Search for food/beverage distributors across 5 major Arkansas cities
+# Output: domains.csv for qualifying pipeline
+
+client: burnt
+
+search:
+  query: "food distributors in {city}"
+  cities:
+    - Little Rock, Arkansas, United States
+    - Fort Smith, Arkansas, United States
+    - Fayetteville, Arkansas, United States
+    - Springdale, Arkansas, United States
+    - Jonesboro, Arkansas, United States
+  results_per_city: 50
+
+# Test mode: only process first 3 cities
+test_mode: 3

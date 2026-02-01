@@ -1,0 +1,15 @@
+# Test config for L1+L2+L3 streaming pipeline
+# Small test to validate the new concurrent L1+L2+L3 queue system
+
+client: poka_labs
+
+search:
+  query: "Specialty chemical/materials manufacturers or distributors in {city}"
+  gl: "us"
+  cities:
+    - New York City, United States
+    - Los Angeles, United States
+    - Chicago, United States
+  results_per_city: 30
+
+analysis_spec: specialty_chemical_analysis

@@ -1,0 +1,96 @@
+{
+  "spec_name": "TEMPLATE_qualification",
+  "description": "Template for company qualification analysis specs",
+  "version": "1.0",
+
+  "_comment_categories": "Define the possible qualification outcomes",
+  "categories": [
+    {
+      "id": "qualified",
+      "label": "Qualified",
+      "description": "Company meets all qualification criteria"
+    },
+    {
+      "id": "not_qualified",
+      "label": "Not Qualified",
+      "description": "Company does not meet qualification criteria"
+    },
+    {
+      "id": "insufficient_info",
+      "label": "Insufficient Information",
+      "description": "Cannot determine qualification from available data"
+    }
+  ],
+
+  "_comment_extraction_fields": "Data to extract from the page (optional)",
+  "extraction_fields": {
+    "company_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official company name"
+    },
+    "website": {
+      "type": "url",
+      "required": false,
+      "description": "Primary website URL"
+    },
+    "phone": {
+      "type": "phone",
+      "required": false,
+      "description": "Primary contact phone"
+    },
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Physical address"
+    }
+  },
+
+  "_comment_questions": "Qualification questions to answer - CUSTOMIZE THESE",
+  "questions": [
+    {
+      "field": "is_distributor",
+      "question": "Is this company a distributor (buys from manufacturers and sells to others)?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "is_wholesale",
+      "question": "Does this company operate as a wholesaler (B2B sales, bulk quantities)?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "product_categories",
+      "question": "What product categories does this company deal with?",
+      "answer_type": "array",
+      "reasoning_required": false,
+      "evidence_required": true
+    },
+    {
+      "field": "confidence_level",
+      "question": "How confident are you in these answers based on the available information?",
+      "answer_type": "string",
+      "answer_options": ["high", "medium", "low", "insufficient"],
+      "reasoning_required": true,
+      "evidence_required": false
+    }
+  ],
+
+  "_comment_sufficiency": "Configuration for determining if enough info exists",
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 2,
+    "min_confidence": "medium",
+    "prompt_addition": "Before answering, assess if the provided content contains enough information to confidently answer the qualification questions. If not, indicate which types of pages would help (e.g., 'about page', 'products page', 'services page')."
+  },
+
+  "_comment_llm": "LLM configuration",
+  "llm": {
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}

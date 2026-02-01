@@ -1,0 +1,514 @@
+# DataDasher - Financial Advisors across Top 500 US Cities
+# Search for financial advisors in the 500 most populated US cities
+# Output: domains.csv for qualifying pipeline
+
+client: datadasher
+
+search:
+  query: "financial advisors in {city}"
+  cities:
+    - New York, New York, United States
+    - Los Angeles, California, United States
+    - Chicago, Illinois, United States
+    - Houston, Texas, United States
+    - Philadelphia, Pennsylvania, United States
+    - Phoenix, Arizona, United States
+    - San Antonio, Texas, United States
+    - San Diego, California, United States
+    - Dallas, Texas, United States
+    - San Jose, California, United States
+    - Austin, Texas, United States
+    - Indianapolis, Indiana, United States
+    - Jacksonville, Florida, United States
+    - San Francisco, California, United States
+    - Columbus, Ohio, United States
+    - Charlotte, North Carolina, United States
+    - Fort Worth, Texas, United States
+    - Detroit, Michigan, United States
+    - El Paso, Texas, United States
+    - Memphis, Tennessee, United States
+    - Seattle, Washington, United States
+    - Denver, Colorado, United States
+    - Washington, District of Columbia, United States
+    - Boston, Massachusetts, United States
+    - Nashville, Tennessee, United States
+    - Baltimore, Maryland, United States
+    - Oklahoma City, Oklahoma, United States
+    - Louisville, Kentucky, United States
+    - Portland, Oregon, United States
+    - Las Vegas, Nevada, United States
+    - Milwaukee, Wisconsin, United States
+    - Albuquerque, New Mexico, United States
+    - Tucson, Arizona, United States
+    - Fresno, California, United States
+    - Sacramento, California, United States
+    - Long Beach, California, United States
+    - Kansas City, Missouri, United States
+    - Mesa, Arizona, United States
+    - Virginia Beach, Virginia, United States
+    - Atlanta, Georgia, United States
+    - Colorado Springs, Colorado, United States
+    - Omaha, Nebraska, United States
+    - Raleigh, North Carolina, United States
+    - Miami, Florida, United States
+    - Oakland, California, United States
+    - Minneapolis, Minnesota, United States
+    - Tulsa, Oklahoma, United States
+    - Cleveland, Ohio, United States
+    - Wichita, Kansas, United States
+    - Arlington, Texas, United States
+    - New Orleans, Louisiana, United States
+    - Bakersfield, California, United States
+    - Tampa, Florida, United States
+    - Honolulu, Hawaii, United States
+    - Aurora, Colorado, United States
+    - Anaheim, California, United States
+    - Santa Ana, California, United States
+    - St. Louis, Missouri, United States
+    - Riverside, California, United States
+    - Corpus Christi, Texas, United States
+    - Lexington-Fayette, Kentucky, United States
+    - Pittsburgh, Pennsylvania, United States
+    - Anchorage, Alaska, United States
+    - Stockton, California, United States
+    - Cincinnati, Ohio, United States
+    - St. Paul, Minnesota, United States
+    - Toledo, Ohio, United States
+    - Greensboro, North Carolina, United States
+    - Newark, New Jersey, United States
+    - Plano, Texas, United States
+    - Henderson, Nevada, United States
+    - Lincoln, Nebraska, United States
+    - Buffalo, New York, United States
+    - Jersey City, New Jersey, United States
+    - Chula Vista, California, United States
+    - Fort Wayne, Indiana, United States
+    - Orlando, Florida, United States
+    - St. Petersburg, Florida, United States
+    - Chandler, Arizona, United States
+    - Laredo, Texas, United States
+    - Norfolk, Virginia, United States
+    - Durham, North Carolina, United States
+    - Madison, Wisconsin, United States
+    - Lubbock, Texas, United States
+    - Irvine, California, United States
+    - Winston-Salem, North Carolina, United States
+    - Glendale, Arizona, United States
+    - Garland, Texas, United States
+    - Hialeah, Florida, United States
+    - Reno, Nevada, United States
+    - Chesapeake, Virginia, United States
+    - Gilbert, Arizona, United States
+    - Baton Rouge, Louisiana, United States
+    - Irving, Texas, United States
+    - Scottsdale, Arizona, United States
+    - North Las Vegas, Nevada, United States
+    - Fremont, California, United States
+    - Boise City, Idaho, United States
+    - Richmond, Virginia, United States
+    - San Bernardino, California, United States
+    - Birmingham, Alabama, United States
+    - Spokane, Washington, United States
+    - Rochester, New York, United States
+    - Des Moines, Iowa, United States
+    - Modesto, California, United States
+    - Fayetteville, North Carolina, United States
+    - Tacoma, Washington, United States
+    - Oxnard, California, United States
+    - Fontana, California, United States
+    - Columbus, Georgia, United States
+    - Montgomery, Alabama, United States
+    - Moreno Valley, California, United States
+    - Shreveport, Louisiana, United States
+    - Aurora, Illinois, United States
+    - Yonkers, New York, United States
+    - Akron, Ohio, United States
+    - Huntington Beach, California, United States
+    - Little Rock, Arkansas, United States
+    - Augusta-Richmond County, Georgia, United States
+    - Amarillo, Texas, United States
+    - Glendale, California, United States
+    - Mobile, Alabama, United States
+    - Grand Rapids, Michigan, United States
+    - Salt Lake City, Utah, United States
+    - Tallahassee, Florida, United States
+    - Huntsville, Alabama, United States
+    - Grand Prairie, Texas, United States
+    - Knoxville, Tennessee, United States
+    - Worcester, Massachusetts, United States
+    - Newport News, Virginia, United States
+    - Brownsville, Texas, United States
+    - Overland Park, Kansas, United States
+    - Santa Clarita, California, United States
+    - Providence, Rhode Island, United States
+    - Garden Grove, California, United States
+    - Chattanooga, Tennessee, United States
+    - Oceanside, California, United States
+    - Jackson, Mississippi, United States
+    - Fort Lauderdale, Florida, United States
+    - Santa Rosa, California, United States
+    - Rancho Cucamonga, California, United States
+    - Port St. Lucie, Florida, United States
+    - Tempe, Arizona, United States
+    - Ontario, California, United States
+    - Vancouver, Washington, United States
+    - Cape Coral, Florida, United States
+    - Sioux Falls, South Dakota, United States
+    - Springfield, Missouri, United States
+    - Peoria, Arizona, United States
+    - Pembroke Pines, Florida, United States
+    - Elk Grove, California, United States
+    - Salem, Oregon, United States
+    - Lancaster, California, United States
+    - Corona, California, United States
+    - Eugene, Oregon, United States
+    - Palmdale, California, United States
+    - Salinas, California, United States
+    - Springfield, Massachusetts, United States
+    - Pasadena, Texas, United States
+    - Fort Collins, Colorado, United States
+    - Hayward, California, United States
+    - Pomona, California, United States
+    - Cary, North Carolina, United States
+    - Rockford, Illinois, United States
+    - Alexandria, Virginia, United States
+    - Escondido, California, United States
+    - McKinney, Texas, United States
+    - Kansas City, Kansas, United States
+    - Joliet, Illinois, United States
+    - Sunnyvale, California, United States
+    - Torrance, California, United States
+    - Bridgeport, Connecticut, United States
+    - Lakewood, Colorado, United States
+    - Hollywood, Florida, United States
+    - Paterson, New Jersey, United States
+    - Naperville, Illinois, United States
+    - Syracuse, New York, United States
+    - Mesquite, Texas, United States
+    - Dayton, Ohio, United States
+    - Savannah, Georgia, United States
+    - Clarksville, Tennessee, United States
+    - Orange, California, United States
+    - Pasadena, California, United States
+    - Fullerton, California, United States
+    - Killeen, Texas, United States
+    - Frisco, Texas, United States
+    - Hampton, Virginia, United States
+    - McAllen, Texas, United States
+    - Warren, Michigan, United States
+    - Bellevue, Washington, United States
+    - West Valley City, Utah, United States
+    - Columbia, South Carolina, United States
+    - Olathe, Kansas, United States
+    - Sterling Heights, Michigan, United States
+    - New Haven, Connecticut, United States
+    - Miramar, Florida, United States
+    - Waco, Texas, United States
+    - Thousand Oaks, California, United States
+    - Cedar Rapids, Iowa, United States
+    - Charleston, South Carolina, United States
+    - Visalia, California, United States
+    - Topeka, Kansas, United States
+    - Elizabeth, New Jersey, United States
+    - Gainesville, Florida, United States
+    - Thornton, Colorado, United States
+    - Roseville, California, United States
+    - Carrollton, Texas, United States
+    - Coral Springs, Florida, United States
+    - Stamford, Connecticut, United States
+    - Simi Valley, California, United States
+    - Concord, California, United States
+    - Hartford, Connecticut, United States
+    - Kent, Washington, United States
+    - Lafayette, Louisiana, United States
+    - Midland, Texas, United States
+    - Surprise, Arizona, United States
+    - Denton, Texas, United States
+    - Victorville, California, United States
+    - Evansville, Indiana, United States
+    - Santa Clara, California, United States
+    - Abilene, Texas, United States
+    - Athens-Clarke County, Georgia, United States
+    - Vallejo, California, United States
+    - Allentown, Pennsylvania, United States
+    - Norman, Oklahoma, United States
+    - Beaumont, Texas, United States
+    - Independence, Missouri, United States
+    - Murfreesboro, Tennessee, United States
+    - Ann Arbor, Michigan, United States
+    - Springfield, Illinois, United States
+    - Berkeley, California, United States
+    - Peoria, Illinois, United States
+    - Provo, Utah, United States
+    - El Monte, California, United States
+    - Columbia, Missouri, United States
+    - Lansing, Michigan, United States
+    - Fargo, North Dakota, United States
+    - Downey, California, United States
+    - Costa Mesa, California, United States
+    - Wilmington, North Carolina, United States
+    - Arvada, Colorado, United States
+    - Inglewood, California, United States
+    - Miami Gardens, Florida, United States
+    - Carlsbad, California, United States
+    - Westminster, Colorado, United States
+    - Rochester, Minnesota, United States
+    - Odessa, Texas, United States
+    - Manchester, New Hampshire, United States
+    - Elgin, Illinois, United States
+    - West Jordan, Utah, United States
+    - Round Rock, Texas, United States
+    - Clearwater, Florida, United States
+    - Waterbury, Connecticut, United States
+    - Gresham, Oregon, United States
+    - Fairfield, California, United States
+    - Billings, Montana, United States
+    - Lowell, Massachusetts, United States
+    - San Buenaventura (Ventura), California, United States
+    - Pueblo, Colorado, United States
+    - High Point, North Carolina, United States
+    - West Covina, California, United States
+    - Richmond, California, United States
+    - Murrieta, California, United States
+    - Cambridge, Massachusetts, United States
+    - Antioch, California, United States
+    - Temecula, California, United States
+    - Norwalk, California, United States
+    - Centennial, Colorado, United States
+    - Everett, Washington, United States
+    - Wichita Falls, Texas, United States
+    - Palm Bay, Florida, United States
+    - Green Bay, Wisconsin, United States
+    - Daly City, California, United States
+    - Burbank, California, United States
+    - Richardson, Texas, United States
+    - Pompano Beach, Florida, United States
+    - North Charleston, South Carolina, United States
+    - Broken Arrow, Oklahoma, United States
+    - Boulder, Colorado, United States
+    - West Palm Beach, Florida, United States
+    - Santa Maria, California, United States
+    - El Cajon, California, United States
+    - Davenport, Iowa, United States
+    - Rialto, California, United States
+    - Las Cruces, New Mexico, United States
+    - San Mateo, California, United States
+    - Lewisville, Texas, United States
+    - South Bend, Indiana, United States
+    - Lakeland, Florida, United States
+    - Erie, Pennsylvania, United States
+    - Tyler, Texas, United States
+    - Pearland, Texas, United States
+    - College Station, Texas, United States
+    - Kenosha, Wisconsin, United States
+    - Sandy Springs, Georgia, United States
+    - Clovis, California, United States
+    - Flint, Michigan, United States
+    - Roanoke, Virginia, United States
+    - Albany, New York, United States
+    - Jurupa Valley, California, United States
+    - Compton, California, United States
+    - San Angelo, Texas, United States
+    - Hillsboro, Oregon, United States
+    - Lawton, Oklahoma, United States
+    - Renton, Washington, United States
+    - Vista, California, United States
+    - Davie, Florida, United States
+    - Greeley, Colorado, United States
+    - Mission Viejo, California, United States
+    - Portsmouth, Virginia, United States
+    - Dearborn, Michigan, United States
+    - South Gate, California, United States
+    - Tuscaloosa, Alabama, United States
+    - Livonia, Michigan, United States
+    - New Bedford, Massachusetts, United States
+    - Vacaville, California, United States
+    - Brockton, Massachusetts, United States
+    - Roswell, Georgia, United States
+    - Beaverton, Oregon, United States
+    - Quincy, Massachusetts, United States
+    - Sparks, Nevada, United States
+    - Yakima, Washington, United States
+    - Lee's Summit, Missouri, United States
+    - Federal Way, Washington, United States
+    - Carson, California, United States
+    - Santa Monica, California, United States
+    - Hesperia, California, United States
+    - Allen, Texas, United States
+    - Rio Rancho, New Mexico, United States
+    - Yuma, Arizona, United States
+    - Westminster, California, United States
+    - Orem, Utah, United States
+    - Lynn, Massachusetts, United States
+    - Redding, California, United States
+    - Spokane Valley, Washington, United States
+    - Miami Beach, Florida, United States
+    - League City, Texas, United States
+    - Lawrence, Kansas, United States
+    - Santa Barbara, California, United States
+    - Plantation, Florida, United States
+    - Sandy, Utah, United States
+    - Sunrise, Florida, United States
+    - Macon, Georgia, United States
+    - Longmont, Colorado, United States
+    - Boca Raton, Florida, United States
+    - San Marcos, California, United States
+    - Greenville, North Carolina, United States
+    - Waukegan, Illinois, United States
+    - Fall River, Massachusetts, United States
+    - Chico, California, United States
+    - Newton, Massachusetts, United States
+    - San Leandro, California, United States
+    - Reading, Pennsylvania, United States
+    - Norwalk, Connecticut, United States
+    - Fort Smith, Arkansas, United States
+    - Newport Beach, California, United States
+    - Asheville, North Carolina, United States
+    - Nashua, New Hampshire, United States
+    - Edmond, Oklahoma, United States
+    - Whittier, California, United States
+    - Nampa, Idaho, United States
+    - Bloomington, Minnesota, United States
+    - Deltona, Florida, United States
+    - Hawthorne, California, United States
+    - Duluth, Minnesota, United States
+    - Carmel, Indiana, United States
+    - Suffolk, Virginia, United States
+    - Clifton, New Jersey, United States
+    - Citrus Heights, California, United States
+    - Livermore, California, United States
+    - Tracy, California, United States
+    - Alhambra, California, United States
+    - Kirkland, Washington, United States
+    - Trenton, New Jersey, United States
+    - Ogden, Utah, United States
+    - Hoover, Alabama, United States
+    - Cicero, Illinois, United States
+    - Fishers, Indiana, United States
+    - Sugar Land, Texas, United States
+    - Danbury, Connecticut, United States
+    - Meridian, Idaho, United States
+    - Indio, California, United States
+    - Concord, North Carolina, United States
+    - Menifee, California, United States
+    - Champaign, Illinois, United States
+    - Buena Park, California, United States
+    - Troy, Michigan, United States
+    - O'Fallon, Missouri, United States
+    - Johns Creek, Georgia, United States
+    - Bellingham, Washington, United States
+    - Westland, Michigan, United States
+    - Bloomington, Indiana, United States
+    - Sioux City, Iowa, United States
+    - Warwick, Rhode Island, United States
+    - Hemet, California, United States
+    - Longview, Texas, United States
+    - Farmington Hills, Michigan, United States
+    - Bend, Oregon, United States
+    - Lakewood, California, United States
+    - Merced, California, United States
+    - Mission, Texas, United States
+    - Chino, California, United States
+    - Redwood City, California, United States
+    - Edinburg, Texas, United States
+    - Cranston, Rhode Island, United States
+    - Parma, Ohio, United States
+    - New Rochelle, New York, United States
+    - Lake Forest, California, United States
+    - Napa, California, United States
+    - Hammond, Indiana, United States
+    - Fayetteville, Arkansas, United States
+    - Bloomington, Illinois, United States
+    - Avondale, Arizona, United States
+    - Somerville, Massachusetts, United States
+    - Palm Coast, Florida, United States
+    - Bryan, Texas, United States
+    - Gary, Indiana, United States
+    - Largo, Florida, United States
+    - Brooklyn Park, Minnesota, United States
+    - Tustin, California, United States
+    - Racine, Wisconsin, United States
+    - Deerfield Beach, Florida, United States
+    - Lynchburg, Virginia, United States
+    - Mountain View, California, United States
+    - Medford, Oregon, United States
+    - Lawrence, Massachusetts, United States
+    - Bellflower, California, United States
+    - Melbourne, Florida, United States
+    - St. Joseph, Missouri, United States
+    - Camden, New Jersey, United States
+    - St. George, Utah, United States
+    - Kennewick, Washington, United States
+    - Baldwin Park, California, United States
+    - Chino Hills, California, United States
+    - Alameda, California, United States
+    - Albany, Georgia, United States
+    - Arlington Heights, Illinois, United States
+    - Scranton, Pennsylvania, United States
+    - Evanston, Illinois, United States
+    - Kalamazoo, Michigan, United States
+    - Baytown, Texas, United States
+    - Upland, California, United States
+    - Springdale, Arkansas, United States
+    - Bethlehem, Pennsylvania, United States
+    - Schaumburg, Illinois, United States
+    - Mount Pleasant, South Carolina, United States
+    - Auburn, Washington, United States
+    - Decatur, Illinois, United States
+    - San Ramon, California, United States
+    - Pleasanton, California, United States
+    - Wyoming, Michigan, United States
+    - Lake Charles, Louisiana, United States
+    - Plymouth, Minnesota, United States
+    - Bolingbrook, Illinois, United States
+    - Pharr, Texas, United States
+    - Appleton, Wisconsin, United States
+    - Gastonia, North Carolina, United States
+    - Folsom, California, United States
+    - Southfield, Michigan, United States
+    - Rochester Hills, Michigan, United States
+    - New Britain, Connecticut, United States
+    - Goodyear, Arizona, United States
+    - Canton, Ohio, United States
+    - Warner Robins, Georgia, United States
+    - Union City, California, United States
+    - Perris, California, United States
+    - Manteca, California, United States
+    - Iowa City, Iowa, United States
+    - Jonesboro, Arkansas, United States
+    - Wilmington, Delaware, United States
+    - Lynwood, California, United States
+    - Loveland, Colorado, United States
+    - Pawtucket, Rhode Island, United States
+    - Boynton Beach, Florida, United States
+    - Waukesha, Wisconsin, United States
+    - Gulfport, Mississippi, United States
+    - Apple Valley, California, United States
+    - Passaic, New Jersey, United States
+    - Rapid City, South Dakota, United States
+    - Layton, Utah, United States
+    - Lafayette, Indiana, United States
+    - Turlock, California, United States
+    - Muncie, Indiana, United States
+    - Temple, Texas, United States
+    - Missouri City, Texas, United States
+    - Redlands, California, United States
+    - Santa Fe, New Mexico, United States
+    - Lauderhill, Florida, United States
+    - Milpitas, California, United States
+    - Palatine, Illinois, United States
+    - Missoula, Montana, United States
+    - Rock Hill, South Carolina, United States
+    - Jacksonville, North Carolina, United States
+    - Franklin, Tennessee, United States
+    - Flagstaff, Arizona, United States
+    - Flower Mound, Texas, United States
+    - Weston, Florida, United States
+    - Waterloo, Iowa, United States
+    - Union City, New Jersey, United States
+    - Mount Vernon, New York, United States
+  results_per_city: 250
+  gl: us
+
+# Full run - all 500 cities
+# test_mode: 5

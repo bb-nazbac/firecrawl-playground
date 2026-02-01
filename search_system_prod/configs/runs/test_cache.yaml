@@ -1,0 +1,12 @@
+# Test config for cache system validation
+client: burnt
+
+search:
+  query: "food distributors in {city}"
+  cities:
+    - Little Rock, Arkansas, United States
+  results_per_city: 10
+
+analysis_spec: food_distributor_analysis
+
+test_mode: 3

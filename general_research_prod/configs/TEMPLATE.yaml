@@ -1,0 +1,55 @@
+# ══════════════════════════════════════════════════════════════
+# GENERAL RESEARCH PIPELINE - RUN CONFIG TEMPLATE
+# ══════════════════════════════════════════════════════════════
+# Copy and rename for each research project.
+# Usage: python run_pipeline.py <config_name>
+
+# Who is this for?
+client: my_client
+name: my_research_project
+
+# ══════════════════════════════════════════════════════════════
+# SEARCH (Serper.dev)
+# ══════════════════════════════════════════════════════════════
+search:
+  # Option A: Flat list of queries
+  queries:
+    - "search query one"
+    - "search query two"
+
+  # Option B: Template + variables (generates queries automatically)
+  # query: "topic in {variable}"
+  # variables:
+  #   - "January 2025"
+  #   - "February 2025"
+
+  # Option C: Both (lists get combined)
+
+  results_per_query: 50      # Results per query (1-1000)
+  gl: us                     # Geolocation code
+  concurrency: 30            # Parallel search workers
+
+# ══════════════════════════════════════════════════════════════
+# SCRAPE + QUALIFY (Firecrawl + LLM)
+# ══════════════════════════════════════════════════════════════
+scrape:
+  spec: my_extraction_spec       # References specs/{name}.json
+  model: gpt-5-mini
+  firecrawl_concurrency: 100
+  openai_concurrency: 100
+  max_pages: 6                   # Max pages per domain (1 homepage + 5 iterations)
+  use_waterfall: true            # Early disqualification filter
+
+# ══════════════════════════════════════════════════════════════
+# DEDUPE
+# ══════════════════════════════════════════════════════════════
+dedupe:
+  enabled: true
+  key_field: company_name        # Column to deduplicate on
+
+# ══════════════════════════════════════════════════════════════
+# OPTIONAL
+# ══════════════════════════════════════════════════════════════
+# test_mode: 3            # Limit to first N queries (for testing)
+# max_cost_usd: 50        # Cost threshold
+# dry_run: false           # Validate config only

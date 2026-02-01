@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualifying Agentic System - Technical Architecture v2.0</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-code: #1e1e2e;
+            --accent-blue: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2a2a3a;
+            --glow-blue: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
+            --glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .nav-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-blue);
+            border-left: 2px solid var(--accent-blue);
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 280px;
+            padding: 60px 80px;
+            max-width: 1200px;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-bottom: 80px;
+            padding-bottom: 60px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+        }
+
+        .section h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--accent-purple);
+        }
+
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--accent-orange);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .code-comment { color: var(--text-muted); }
+        .code-keyword { color: var(--accent-purple); }
+        .code-string { color: var(--accent-green); }
+        .code-number { color: var(--accent-orange); }
+        .code-function { color: var(--accent-blue); }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: var(--glow-blue);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        tr:hover td {
+            background: var(--bg-secondary);
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .flow-box {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+
+        .flow-box.highlight {
+            border-color: var(--accent-blue);
+            box-shadow: var(--glow-blue);
+        }
+
+        .flow-box.green {
+            border-color: var(--accent-green);
+            box-shadow: var(--glow-green);
+        }
+
+        .flow-box.purple {
+            border-color: var(--accent-purple);
+            box-shadow: var(--glow-purple);
+        }
+
+        .flow-box-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .flow-box-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .flow-arrow {
+            color: var(--accent-blue);
+            font-size: 24px;
+        }
+
+        .flow-arrow-down {
+            display: flex;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--accent-orange);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .alert-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 15px 0 15px 30px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: var(--text-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .stat-value.green { color: var(--accent-green); }
+        .stat-value.purple { color: var(--accent-purple); }
+        .stat-value.orange { color: var(--accent-orange); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-blue { background: rgba(0, 212, 255, 0.2); color: var(--accent-blue); }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+        .badge-purple { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+        .badge-orange { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .nav { display: none; }
+            .main { margin-left: 0; padding: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-title">QAS Documentation</div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Overview</div>
+            <a href="#overview" class="nav-link">System Overview</a>
+            <a href="#architecture" class="nav-link">Architecture</a>
+            <a href="#pipelines" class="nav-link">Pipeline Modes</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Core Components</div>
+            <a href="#layer1" class="nav-link">L1: Homepage Analysis</a>
+            <a href="#layer2" class="nav-link">L2: Map + Iterate</a>
+            <a href="#waterfall" class="nav-link">Waterfall Filter</a>
+            <a href="#sufficiency" class="nav-link">Sufficiency Check</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Configuration</div>
+            <a href="#specs" class="nav-link">Spec System</a>
+            <a href="#spec-structure" class="nav-link">Spec Structure</a>
+            <a href="#classification" class="nav-link">Classification Logic</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operations</div>
+            <a href="#usage" class="nav-link">Usage Guide</a>
+            <a href="#outputs" class="nav-link">Output Format</a>
+            <a href="#costs" class="nav-link">Cost Model</a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Reference</div>
+            <a href="#directory" class="nav-link">Directory Structure</a>
+            <a href="#models" class="nav-link">Model Selection</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-badge">Technical Documentation v2.0</div>
+            <h1>Qualifying Agentic System</h1>
+            <p class="hero-subtitle">
+                A high-throughput, spec-driven pipeline for qualifying business leads through intelligent web scraping and LLM-based analysis. Processes thousands of domains with configurable classification rules.
+            </p>
+        </section>
+
+        <!-- Overview -->
+        <section id="overview" class="section">
+            <h2>System Overview</h2>
+
+            <p>The Qualifying Agentic System (QAS) is a production-grade pipeline that analyzes company websites to determine if they meet specific qualification criteria. It uses a layered approach combining web scraping (Firecrawl) with LLM analysis (OpenAI GPT models) to extract structured data and make classification decisions.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3,000+</div>
+                    <div class="stat-label">Domains/Hour</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value green">$0.007</div>
+                    <div class="stat-label">Cost/Domain</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value purple">85%</div>
+                    <div class="stat-label">Early Termination</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value orange">2-15</div>
+                    <div class="stat-label">Pages/Domain</div>
+                </div>
+            </div>
+
+            <h3>Key Capabilities</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">Spec-Driven Classification</div>
+                    <div class="card-desc">JSON specification files define questions, categories, and classification rules. No code changes needed to modify qualification criteria.</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">High Concurrency</div>
+                    <div class="card-desc">Parallel processing with configurable Firecrawl (50) and OpenAI (150) concurrency. Processes 3,000+ domains per hour.</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Cost Optimization</div>
+                    <div class="card-desc">Waterfall filters, early termination on homepage sufficiency, and intelligent page selection minimize API costs.</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <div class="card-title">Iterative Refinement</div>
+                    <div class="card-desc">When initial analysis is insufficient, the system iteratively scrapes additional pages until confidence thresholds are met.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="section">
+            <h2>Architecture</h2>
+
+            <p>The system follows a layered architecture where each domain passes through progressive stages of analysis, with early termination when sufficient information is gathered.</p>
+
+            <div class="flow-diagram">
+                <div class="flow-row">
+                    <div class="flow-box">
+                        <div class="flow-box-title">📄 CSV Input</div>
+                        <div class="flow-box-sub">Domain list</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-down">↓</div>
+
+                <div class="flow-row">
+                    <div class="flow-box highlight">
+                        <div class="flow-box-title">🔍 L1: Homepage</div>
+                        <div class="flow-box-sub">Scrape + Analyze</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-down">↓</div>
+
+                <div class="flow-row">
+                    <div class="flow-box green" style="margin-right: 40px;">
+                        <div class="flow-box-title">✅ Sufficient</div>
+                        <div class="flow-box-sub">~15% of domains</div>
+                    </div>
+                    <div class="flow-box purple">
+                        <div class="flow-box-title">🔄 Insufficient</div>
+                        <div class="flow-box-sub">Needs more data</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-down">↓</div>
+
+                <div class="flow-row">
+                    <div class="flow-box highlight">
+                        <div class="flow-box-title">🗺️ L2: Map + Iterate</div>
+                        <div class="flow-box-sub">Discover & scrape pages</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-down">↓</div>
+
+                <div class="flow-row">
+                    <div class="flow-box green">
+                        <div class="flow-box-title">📊 Classification</div>
+                        <div class="flow-box-sub">Rule-based decision</div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow-down">↓</div>
+
+                <div class="flow-row">
+                    <div class="flow-box">
+                        <div class="flow-box-title">💾 JSONL Output</div>
+                        <div class="flow-box-sub">Results + metadata</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Component Interaction</h3>
+            <pre><code><span class="code-comment">┌─────────────────────────────────────────────────────────────────┐</span>
+<span class="code-comment">│                         PIPELINE.PY                              │</span>
+<span class="code-comment">│  Orchestrates the flow, manages concurrency, aggregates results  │</span>
+<span class="code-comment">└─────────────────────────────────────────────────────────────────┘</span>
+                              │
+         ┌────────────────────┼────────────────────┐
+         ▼                    ▼                    ▼
+<span class="code-keyword">┌─────────────┐    ┌─────────────────┐    ┌──────────────┐</span>
+<span class="code-keyword">│ LAYER       │    │ LAYER           │    │ ANALYTICS    │</span>
+<span class="code-keyword">│ HOMEPAGE    │    │ MAP_ITERATE     │    │ + LOGGING    │</span>
+<span class="code-keyword">│             │    │                 │    │              │</span>
+<span class="code-keyword">│ - Scrape HP │    │ - /map endpoint │    │ - Cost track │</span>
+<span class="code-keyword">│ - Waterfall │    │ - Page select   │    │ - Progress   │</span>
+<span class="code-keyword">│ - Sufficiency│   │ - Iterate loop  │    │ - Metrics    │</span>
+<span class="code-keyword">└─────────────┘    └─────────────────┘    └──────────────┘</span>
+         │                    │
+         ▼                    ▼
+<span class="code-function">┌─────────────────────────────────────────┐</span>
+<span class="code-function">│            EXTERNAL SERVICES             │</span>
+<span class="code-function">│  ┌─────────────┐    ┌─────────────────┐ │</span>
+<span class="code-function">│  │  Firecrawl  │    │   OpenAI API    │ │</span>
+<span class="code-function">│  │  (Scraping) │    │  (GPT Models)   │ │</span>
+<span class="code-function">│  └─────────────┘    └─────────────────┘ │</span>
+<span class="code-function">└─────────────────────────────────────────┘</span></code></pre>
+        </section>
+
+        <!-- Pipelines -->
+        <section id="pipelines" class="section">
+            <h2>Pipeline Modes</h2>
+
+            <p>The system provides two pipeline modes optimized for different use cases:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Normal Pipeline</th>
+                        <th>Deep Pipeline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Module</strong></td>
+                        <td><code>core_openai.pipeline</code></td>
+                        <td><code>core_openai_deep.pipeline</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pages per Domain</strong></td>
+                        <td>1-3 pages</td>
+                        <td>5-15 pages</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost/Domain</strong></td>
+                        <td>~$0.007</td>
+                        <td>~$0.05-0.10</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Throughput</strong></td>
+                        <td>~3,000 domains/hr</td>
+                        <td>~500 domains/hr</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use Case</strong></td>
+                        <td>High-volume screening, clear qualification criteria</td>
+                        <td>Deep analysis, nuanced qualification, rich data extraction</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>CAT SAP qualification, initial screening</td>
+                        <td>Forge duty drawback, detailed company research</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Usage Examples</h3>
+            <pre><code><span class="code-comment"># Normal Pipeline - High throughput screening</span>
+python -m <span class="code-function">core_openai.pipeline</span> input.csv \
+    --spec configs/specs/analysis/cat_sap_qualification.json \
+    --client cat \
+    --run-name sap_btp_jan13
+
+<span class="code-comment"># Deep Pipeline - Detailed analysis</span>
+python -m <span class="code-function">core_openai_deep.pipeline</span> input.csv \
+    --spec configs/specs/analysis/forge_duty_drawback_qualification_v4.json \
+    --client forge \
+    --run-name forge_ny_production \
+    --model gpt-5-mini \
+    --min-pages <span class="code-number">5</span> \
+    --max-pages <span class="code-number">15</span></code></pre>
+        </section>
+
+        <!-- Layer 1 -->
+        <section id="layer1" class="section">
+            <h2>L1: Homepage Analysis</h2>
+
+            <p>The first layer scrapes and analyzes the company's homepage to make an initial qualification decision. This is the most cost-effective stage, as many domains can be classified with just homepage content.</p>
+
+            <h3>Process Flow</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-title">1. Homepage Scrape</div>
+                    <div class="timeline-desc">Firecrawl fetches the homepage HTML, converts to clean markdown. Handles redirects, JavaScript rendering, and rate limiting.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">2. Waterfall Filter (Optional)</div>
+                    <div class="timeline-desc">Quick pre-check using homepage content to disqualify obvious non-fits (competitors, wrong TLDs, blocklisted patterns). Saves LLM costs.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">3. LLM Analysis</div>
+                    <div class="timeline-desc">GPT analyzes the homepage markdown against spec questions. Extracts answers with confidence levels and evidence.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-title">4. Sufficiency Check</div>
+                    <div class="timeline-desc">Evaluates if enough critical questions are answered with sufficient confidence. If yes, skip L2 and classify immediately.</div>
+                </div>
+            </div>
+
+            <h3>Sufficiency Criteria</h3>
+            <p>A homepage is considered sufficient when:</p>
+            <ul>
+                <li><strong>Minimum questions answered:</strong> Typically 4 of the critical questions</li>
+                <li><strong>All required questions answered:</strong> Questions marked as required in spec must have answers</li>
+                <li><strong>Confidence threshold met:</strong> Answers must have at least "medium" confidence</li>
+            </ul>
+
+            <div class="alert alert-success">
+                <div class="alert-title">Cost Optimization</div>
+                <div class="alert-text">In typical runs, 15-20% of domains are fully classified at L1 (homepage only), saving significant L2 costs. The waterfall filter can disqualify an additional 5-10% before any LLM analysis.</div>
+            </div>
+        </section>
+
+        <!-- Layer 2 -->
+        <section id="layer2" class="section">
+            <h2>L2: Map + Iterate</h2>
+
+            <p>When the homepage doesn't provide sufficient information, L2 discovers and analyzes additional pages through an intelligent iterative process.</p>
+
+            <h3>Map Phase</h3>
+            <p>Uses Firecrawl's <code>/map</code> endpoint to discover all accessible pages on the domain:</p>
+            <pre><code><span class="code-comment"># Firecrawl /map response example</span>
+{
+    <span class="code-string">"links"</span>: [
+        <span class="code-string">"https://example.com/about"</span>,
+        <span class="code-string">"https://example.com/products"</span>,
+        <span class="code-string">"https://example.com/services"</span>,
+        <span class="code-string">"https://example.com/contact"</span>,
+        <span class="code-string">"https://example.com/careers"</span>,
+        ...
+    ]
+}</code></pre>
+
+            <h3>Iteration Loop</h3>
+            <p>The system iteratively selects and scrapes pages until sufficiency is reached or max iterations hit:</p>
+
+            <div class="flow-diagram">
+                <div class="flow-row">
+                    <div class="flow-box highlight">
+                        <div class="flow-box-title">📋 Available Pages</div>
+                        <div class="flow-box-sub">From /map result</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box purple">
+                        <div class="flow-box-title">🤖 LLM Selection</div>
+                        <div class="flow-box-sub">Pick most relevant</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-box-title">📄 Scrape Page</div>
+                        <div class="flow-box-sub">Get markdown</div>
+                    </div>
+                </div>
+                <div class="flow-arrow-down">↓</div>
+                <div class="flow-row">
+                    <div class="flow-box green">
+                        <div class="flow-box-title">🔄 Re-analyze</div>
+                        <div class="flow-box-sub">Update answers</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box">
+                        <div class="flow-box-title">✅ Check Sufficiency</div>
+                        <div class="flow-box-sub">Enough info?</div>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-box purple">
+                        <div class="flow-box-title">🔁 Loop or Exit</div>
+                        <div class="flow-box-sub">Max 3 iterations</div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Page Selection Strategy</h4>
+            <p>The LLM selects pages based on:</p>
+            <ul>
+                <li><strong>Relevance to unanswered questions:</strong> Prioritizes pages likely to contain missing information</li>
+                <li><strong>Page priority hints:</strong> Spec can define preferred pages (about, products, services)</li>
+                <li><strong>URL patterns:</strong> Recognizes common patterns like /about-us, /what-we-do</li>
+            </ul>
+        </section>
+
+        <!-- Waterfall Filter -->
+        <section id="waterfall" class="section">
+            <h2>Waterfall Filter</h2>
+
+            <p>The waterfall filter is an optional pre-qualification stage that runs <em>before</em> the main LLM analysis. It uses simple pattern matching and a quick LLM check to disqualify obvious non-fits, saving significant costs.</p>
+
+            <h3>Filter Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Filter Type</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Domain Blocklist</strong></td>
+                        <td>Known competitor domains to skip entirely</td>
+                        <td><code>accenture.com, deloitte.com, ibm.com</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TLD Skip</strong></td>
+                        <td>Skip domains with certain TLDs</td>
+                        <td><code>.gov, .edu</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Content Patterns</strong></td>
+                        <td>Disqualify if homepage contains certain strings</td>
+                        <td><code>"sap consulting", "erp implementation"</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quick LLM Check</strong></td>
+                        <td>Fast classification into broad categories</td>
+                        <td><code>PRODUCTION_COMPANY, IT_SERVICES_COMPETITOR</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Spec Configuration</h3>
+            <pre><code><span class="code-string">"waterfall_filter"</span>: {
+    <span class="code-string">"enabled"</span>: <span class="code-keyword">true</span>,
+    <span class="code-string">"domain_blocklist"</span>: [<span class="code-string">"accenture.com"</span>, <span class="code-string">"deloitte.com"</span>],
+    <span class="code-string">"skip_domains_matching"</span>: [<span class="code-string">".gov"</span>, <span class="code-string">".edu"</span>],
+    <span class="code-string">"disqualify_if_homepage_contains"</span>: [
+        <span class="code-string">"sap consulting"</span>,
+        <span class="code-string">"erp implementation"</span>,
+        <span class="code-string">"systems integrator"</span>
+    ],
+    <span class="code-string">"questions"</span>: [{
+        <span class="code-string">"field"</span>: <span class="code-string">"quick_business_check"</span>,
+        <span class="code-string">"prompt"</span>: <span class="code-string">"What type of business is this?"</span>,
+        <span class="code-string">"answer_options"</span>: [<span class="code-string">"PRODUCTION_COMPANY"</span>, <span class="code-string">"IT_SERVICES_COMPETITOR"</span>]
+    }],
+    <span class="code-string">"disqualify_rules"</span>: [{
+        <span class="code-string">"if_field"</span>: <span class="code-string">"quick_business_check"</span>,
+        <span class="code-string">"equals"</span>: <span class="code-string">"IT_SERVICES_COMPETITOR"</span>,
+        <span class="code-string">"then_disqualify"</span>: <span class="code-keyword">true</span>,
+        <span class="code-string">"reason"</span>: <span class="code-string">"COMPETITOR"</span>
+    }]
+}</code></pre>
+        </section>
+
+        <!-- Sufficiency Check -->
+        <section id="sufficiency" class="section">
+            <h2>Sufficiency Check</h2>
+
+            <p>The sufficiency check determines whether enough information has been gathered to make a confident classification decision. This is the key mechanism for early termination and cost optimization.</p>
+
+            <h3>Configuration</h3>
+            <pre><code><span class="code-string">"sufficiency_check"</span>: {
+    <span class="code-string">"enabled"</span>: <span class="code-keyword">true</span>,
+    <span class="code-string">"min_questions_answered"</span>: <span class="code-number">4</span>,
+    <span class="code-string">"required_questions"</span>: [
+        <span class="code-string">"is_production_oriented"</span>,
+        <span class="code-string">"us_operations"</span>,
+        <span class="code-string">"is_competitor"</span>,
+        <span class="code-string">"industry"</span>
+    ],
+    <span class="code-string">"min_confidence"</span>: <span class="code-string">"medium"</span>
+}</code></pre>
+
+            <h3>Evaluation Logic</h3>
+            <ol>
+                <li>Count how many questions have non-null answers</li>
+                <li>Check that all <code>required_questions</code> are answered</li>
+                <li>Verify each answer meets the <code>min_confidence</code> threshold</li>
+                <li>If all criteria met → sufficient, proceed to classification</li>
+                <li>If not met → continue to next iteration or L2</li>
+            </ol>
+        </section>
+
+        <!-- Specs -->
+        <section id="specs" class="section">
+            <h2>Spec System</h2>
+
+            <p>Specifications are JSON configuration files that define the entire qualification logic. They are the <strong>single source of truth</strong> for what questions to ask, how to classify, and what outputs to produce.</p>
+
+            <h3>Spec Locations</h3>
+            <pre><code>configs/specs/analysis/
+├── cat_sap_qualification.json      <span class="code-comment"># CAT client - SAP manufacturing</span>
+├── forge_duty_drawback_qualification_v4.json  <span class="code-comment"># Forge - duty drawback</span>
+└── [client]_[use_case].json        <span class="code-comment"># Pattern for new specs</span></code></pre>
+
+            <h3>Key Benefits</h3>
+            <ul>
+                <li><strong>No code changes:</strong> Modify qualification criteria by editing JSON only</li>
+                <li><strong>Version control:</strong> Track changes to business rules over time</li>
+                <li><strong>Client isolation:</strong> Each client has their own spec file</li>
+                <li><strong>Reproducibility:</strong> Same spec always produces same behavior</li>
+            </ul>
+        </section>
+
+        <!-- Spec Structure -->
+        <section id="spec-structure" class="section">
+            <h2>Spec Structure</h2>
+
+            <p>A complete spec file contains the following sections:</p>
+
+            <h3>1. Metadata</h3>
+            <pre><code>{
+    <span class="code-string">"spec_name"</span>: <span class="code-string">"cat_sap_qualification"</span>,
+    <span class="code-string">"description"</span>: <span class="code-string">"SAP qualification for manufacturing companies"</span>,
+    <span class="code-string">"version"</span>: <span class="code-string">"1.4"</span>,
+    <span class="code-string">"critical_questions"</span>: [<span class="code-string">"is_production_oriented"</span>, <span class="code-string">"us_operations"</span>]
+}</code></pre>
+
+            <h3>2. Categories</h3>
+            <pre><code><span class="code-string">"categories"</span>: [
+    {
+        <span class="code-string">"name"</span>: <span class="code-string">"MANUFACTURING"</span>,
+        <span class="code-string">"description"</span>: <span class="code-string">"Companies that manufacture physical products"</span>
+    },
+    {
+        <span class="code-string">"name"</span>: <span class="code-string">"FOOD_AND_BEVERAGE"</span>,
+        <span class="code-string">"description"</span>: <span class="code-string">"Food and beverage manufacturers"</span>
+    },
+    {
+        <span class="code-string">"name"</span>: <span class="code-string">"DISQUALIFIED"</span>,
+        <span class="code-string">"description"</span>: <span class="code-string">"Does not meet qualification criteria"</span>
+    }
+]</code></pre>
+
+            <h3>3. Questions</h3>
+            <pre><code><span class="code-string">"questions"</span>: [
+    {
+        <span class="code-string">"field"</span>: <span class="code-string">"is_production_oriented"</span>,
+        <span class="code-string">"question"</span>: <span class="code-string">"Is this an industrial-scale manufacturer?"</span>,
+        <span class="code-string">"answer_type"</span>: <span class="code-string">"boolean"</span>,
+        <span class="code-string">"reasoning_required"</span>: <span class="code-keyword">true</span>,
+        <span class="code-string">"evidence_required"</span>: <span class="code-keyword">true</span>,
+        <span class="code-string">"guidance"</span>: <span class="code-string">"YES only if they own factories that produce goods at scale..."</span>
+    },
+    {
+        <span class="code-string">"field"</span>: <span class="code-string">"industry"</span>,
+        <span class="code-string">"question"</span>: <span class="code-string">"What industry is this company in?"</span>,
+        <span class="code-string">"answer_type"</span>: <span class="code-string">"string"</span>,
+        <span class="code-string">"answer_options"</span>: [<span class="code-string">"Manufacturing"</span>, <span class="code-string">"Food & Beverage"</span>, <span class="code-string">"Other"</span>]
+    }
+]</code></pre>
+
+            <h3>4. Classification Logic</h3>
+            <pre><code><span class="code-string">"classification_logic"</span>: {
+    <span class="code-string">"apply_in_order"</span>: [
+        {
+            <span class="code-string">"order"</span>: <span class="code-number">1</span>,
+            <span class="code-string">"condition"</span>: <span class="code-string">"is_competitor = true"</span>,
+            <span class="code-string">"result"</span>: <span class="code-string">"DISQUALIFIED"</span>,
+            <span class="code-string">"disqualification_reason"</span>: <span class="code-string">"competitor"</span>
+        },
+        {
+            <span class="code-string">"order"</span>: <span class="code-number">2</span>,
+            <span class="code-string">"condition"</span>: <span class="code-string">"is_production_oriented = false"</span>,
+            <span class="code-string">"result"</span>: <span class="code-string">"DISQUALIFIED"</span>,
+            <span class="code-string">"disqualification_reason"</span>: <span class="code-string">"not_production_oriented"</span>
+        },
+        {
+            <span class="code-string">"order"</span>: <span class="code-number">5</span>,
+            <span class="code-string">"condition"</span>: <span class="code-string">"industry = 'Manufacturing'"</span>,
+            <span class="code-string">"result"</span>: <span class="code-string">"MANUFACTURING"</span>
+        }
+    ]
+}</code></pre>
+
+            <h3>5. Examples (for LLM context)</h3>
+            <pre><code><span class="code-string">"examples"</span>: {
+    <span class="code-string">"qualified"</span>: [
+        {<span class="code-string">"domain"</span>: <span class="code-string">"tysonfoods.com"</span>, <span class="code-string">"classification"</span>: <span class="code-string">"FOOD_AND_BEVERAGE"</span>}
+    ],
+    <span class="code-string">"disqualified"</span>: [
+        {<span class="code-string">"domain"</span>: <span class="code-string">"accenture.com"</span>, <span class="code-string">"reason"</span>: <span class="code-string">"competitor"</span>}
+    ]
+}</code></pre>
+        </section>
+
+        <!-- Classification -->
+        <section id="classification" class="section">
+            <h2>Classification Logic</h2>
+
+            <p>Classification rules are evaluated <strong>in order</strong>. The first matching rule determines the final classification. This allows for a clear priority hierarchy.</p>
+
+            <h3>Condition Syntax</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Syntax</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>field = value</code></td>
+                        <td>Exact match (case-insensitive)</td>
+                        <td><code>is_competitor = true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>field = 'value'</code></td>
+                        <td>String match with quotes</td>
+                        <td><code>industry = 'Manufacturing'</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>field in [a, b, c]</code></td>
+                        <td>Value is one of multiple options</td>
+                        <td><code>tier in [HIGH, MEDIUM]</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>default</code></td>
+                        <td>Catch-all fallback rule</td>
+                        <td>Always matches if reached</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-warning">
+                <div class="alert-title">Important: Rule Order Matters</div>
+                <div class="alert-text">Rules are evaluated top-to-bottom by <code>order</code> field. Place disqualification rules first to catch invalid leads before category assignment.</div>
+            </div>
+        </section>
+
+        <!-- Usage -->
+        <section id="usage" class="section">
+            <h2>Usage Guide</h2>
+
+            <h3>Basic Command</h3>
+            <pre><code>python -m core_openai.pipeline &lt;input.csv&gt; \
+    --spec &lt;path/to/spec.json&gt; \
+    --client &lt;client_name&gt; \
+    --run-name &lt;run_identifier&gt;</code></pre>
+
+            <h3>All Options</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>--spec</code></td>
+                        <td><em>required</em></td>
+                        <td>Path to spec JSON file</td>
+                    </tr>
+                    <tr>
+                        <td><code>--client</code></td>
+                        <td><em>required</em></td>
+                        <td>Client identifier (used in output path)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--run-name</code></td>
+                        <td>timestamp</td>
+                        <td>Run identifier for output folder</td>
+                    </tr>
+                    <tr>
+                        <td><code>--model</code></td>
+                        <td>gpt-5-mini</td>
+                        <td>OpenAI model to use</td>
+                    </tr>
+                    <tr>
+                        <td><code>--firecrawl-concurrency</code></td>
+                        <td>50</td>
+                        <td>Max parallel Firecrawl requests</td>
+                    </tr>
+                    <tr>
+                        <td><code>--openai-concurrency</code></td>
+                        <td>150</td>
+                        <td>Max parallel OpenAI requests</td>
+                    </tr>
+                    <tr>
+                        <td><code>--min-pages</code></td>
+                        <td>5 (deep)</td>
+                        <td>Minimum pages to scrape (deep only)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--max-pages</code></td>
+                        <td>15 (deep)</td>
+                        <td>Maximum pages to scrape (deep only)</td>
+                    </tr>
+                    <tr>
+                        <td><code>--no-waterfall</code></td>
+                        <td>false</td>
+                        <td>Skip waterfall filter</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Input CSV Format</h3>
+            <p>The input CSV must have a column named <code>domain</code> (or <code>Website</code>):</p>
+            <pre><code>domain
+tysonfoods.com
+generalmills.com
+accenture.com
+example.com</code></pre>
+
+            <h3>Environment Variables</h3>
+            <pre><code><span class="code-comment"># Required</span>
+export OPENAI_API_KEY=<span class="code-string">"sk-..."</span>
+export FIRECRAWL_API_KEY=<span class="code-string">"fc-..."</span></code></pre>
+        </section>
+
+        <!-- Outputs -->
+        <section id="outputs" class="section">
+            <h2>Output Format</h2>
+
+            <h3>Output Directory Structure</h3>
+            <pre><code>outputs/&lt;client&gt;/&lt;run_name&gt;_&lt;timestamp&gt;/
+├── results.jsonl           <span class="code-comment"># One JSON object per domain</span>
+├── qualified.csv           <span class="code-comment"># Domains that passed qualification</span>
+├── disqualified.csv        <span class="code-comment"># Domains that failed qualification</span>
+├── failed.csv              <span class="code-comment"># Domains that errored (DNS, timeout)</span>
+├── run_config.json         <span class="code-comment"># Config snapshot for reproducibility</span>
+└── analytics.json          <span class="code-comment"># Aggregate metrics</span></code></pre>
+
+            <h3>Result Object Schema</h3>
+            <pre><code>{
+    <span class="code-string">"domain"</span>: <span class="code-string">"tysonfoods.com"</span>,
+    <span class="code-string">"success"</span>: <span class="code-keyword">true</span>,
+    <span class="code-string">"path"</span>: <span class="code-string">"homepage_sufficient"</span>,  <span class="code-comment">// or "homepage_plus_iterate"</span>
+    <span class="code-string">"filtered_early"</span>: <span class="code-keyword">false</span>,
+    <span class="code-string">"classification"</span>: <span class="code-string">"FOOD_AND_BEVERAGE"</span>,
+    <span class="code-string">"disqualification_reason"</span>: <span class="code-keyword">null</span>,
+    <span class="code-string">"answers"</span>: {
+        <span class="code-string">"what_they_do"</span>: <span class="code-string">"Meat processing and food manufacturing..."</span>,
+        <span class="code-string">"industry"</span>: <span class="code-string">"Food & Beverage"</span>,
+        <span class="code-string">"is_production_oriented"</span>: <span class="code-string">"true"</span>,
+        <span class="code-string">"us_operations"</span>: <span class="code-string">"true"</span>,
+        <span class="code-string">"is_competitor"</span>: <span class="code-string">"false"</span>
+    },
+    <span class="code-string">"confidence"</span>: {
+        <span class="code-string">"what_they_do"</span>: <span class="code-string">"HIGH"</span>,
+        <span class="code-string">"industry"</span>: <span class="code-string">"HIGH"</span>,
+        <span class="code-string">"is_production_oriented"</span>: <span class="code-string">"HIGH"</span>
+    },
+    <span class="code-string">"pages_scraped"</span>: <span class="code-number">2</span>,
+    <span class="code-string">"iterations"</span>: <span class="code-number">1</span>,
+    <span class="code-string">"credits_used"</span>: <span class="code-number">3</span>,
+    <span class="code-string">"tokens_used"</span>: <span class="code-number">12500</span>,
+    <span class="code-string">"duration_ms"</span>: <span class="code-number">45000</span>
+}</code></pre>
+
+            <h3>Path Values</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Path</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>filtered_early</code></td>
+                        <td>Disqualified by waterfall filter (lowest cost)</td>
+                    </tr>
+                    <tr>
+                        <td><code>homepage_sufficient</code></td>
+                        <td>Classified using only homepage (low cost)</td>
+                    </tr>
+                    <tr>
+                        <td><code>homepage_plus_iterate</code></td>
+                        <td>Required additional pages (higher cost)</td>
+                    </tr>
+                    <tr>
+                        <td><code>failed</code></td>
+                        <td>Domain unreachable or scrape error</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Costs -->
+        <section id="costs" class="section">
+            <h2>Cost Model</h2>
+
+            <h3>Cost Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Unit</th>
+                        <th>Approximate Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Firecrawl</strong></td>
+                        <td>Per page scrape</td>
+                        <td>1 credit (~$0.001)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Firecrawl /map</strong></td>
+                        <td>Per domain</td>
+                        <td>1 credit (~$0.001)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI gpt-5-mini</strong></td>
+                        <td>Input tokens</td>
+                        <td>$0.25 / 1M tokens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI gpt-5-mini</strong></td>
+                        <td>Output tokens</td>
+                        <td>$2.00 / 1M tokens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI gpt-5-nano</strong></td>
+                        <td>Input tokens</td>
+                        <td>$0.05 / 1M tokens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI gpt-5-nano</strong></td>
+                        <td>Output tokens</td>
+                        <td>$0.40 / 1M tokens</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Typical Cost per Domain</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pipeline Mode</th>
+                        <th>Path</th>
+                        <th>Cost Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal</td>
+                        <td>Waterfall filter only</td>
+                        <td>$0.001 - $0.002</td>
+                    </tr>
+                    <tr>
+                        <td>Normal</td>
+                        <td>Homepage sufficient</td>
+                        <td>$0.003 - $0.005</td>
+                    </tr>
+                    <tr>
+                        <td>Normal</td>
+                        <td>Homepage + iterate</td>
+                        <td>$0.007 - $0.015</td>
+                    </tr>
+                    <tr>
+                        <td>Deep</td>
+                        <td>Full analysis</td>
+                        <td>$0.05 - $0.15</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-info">
+                <div class="alert-title">Cost Optimization Tips</div>
+                <div class="alert-text">
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>Use waterfall filters to eliminate obvious non-fits early</li>
+                        <li>Tune sufficiency criteria to terminate earlier when possible</li>
+                        <li>Use gpt-5-nano for lower-stakes classifications</li>
+                        <li>Reduce max_pages in deep pipeline if full analysis isn't needed</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Directory Structure -->
+        <section id="directory" class="section">
+            <h2>Directory Structure</h2>
+
+            <pre><code>qualifying_agentic_system_prod/
+├── <span class="code-function">core_openai/</span>              <span class="code-comment"># Normal pipeline (2-3 pages)</span>
+│   ├── pipeline.py           <span class="code-comment"># Main orchestrator</span>
+│   ├── layer_homepage.py     <span class="code-comment"># L1: Homepage analysis</span>
+│   ├── layer_map_iterate.py  <span class="code-comment"># L2: Map + iterate logic</span>
+│   ├── batch_runner.py       <span class="code-comment"># Concurrent execution</span>
+│   ├── cost_tracker.py       <span class="code-comment"># Token & credit tracking</span>
+│   ├── analytics.py          <span class="code-comment"># Metrics aggregation</span>
+│   └── logger.py             <span class="code-comment"># Logging utilities</span>
+│
+├── <span class="code-function">core_openai_deep/</span>         <span class="code-comment"># Deep pipeline (5-15 pages)</span>
+│   ├── pipeline.py           <span class="code-comment"># Deep analysis orchestrator</span>
+│   ├── layer_homepage.py     <span class="code-comment"># Enhanced homepage analysis</span>
+│   ├── layer_map_iterate.py  <span class="code-comment"># Extended iteration logic</span>
+│   └── ...                   <span class="code-comment"># Similar structure to core_openai</span>
+│
+├── <span class="code-function">configs/</span>
+│   └── specs/
+│       └── analysis/
+│           ├── cat_sap_qualification.json
+│           └── forge_duty_drawback_qualification_v4.json
+│
+├── <span class="code-function">outputs/</span>                   <span class="code-comment"># Run outputs</span>
+│   ├── cat/                  <span class="code-comment"># Client-specific folders</span>
+│   │   └── run_name_timestamp/
+│   └── forge/
+│
+├── <span class="code-function">inputs/</span>                    <span class="code-comment"># Input CSV files</span>
+│
+└── <span class="code-function">docs/</span>
+    └── architecture.html     <span class="code-comment"># This documentation</span></code></pre>
+        </section>
+
+        <!-- Models -->
+        <section id="models" class="section">
+            <h2>Model Selection</h2>
+
+            <h3>Available Models</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Speed</th>
+                        <th>Cost</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>gpt-5-mini</code></td>
+                        <td>Fast</td>
+                        <td>Medium</td>
+                        <td>Production runs, balanced quality/cost</td>
+                    </tr>
+                    <tr>
+                        <td><code>gpt-5-nano</code></td>
+                        <td>Very Fast</td>
+                        <td>Low</td>
+                        <td>High-volume screening, simple criteria</td>
+                    </tr>
+                    <tr>
+                        <td><code>gpt-4o</code></td>
+                        <td>Medium</td>
+                        <td>High</td>
+                        <td>Complex reasoning, nuanced classification</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Model Selection Guidelines</h3>
+            <ul>
+                <li><strong>Default to gpt-5-mini</strong> for most production workloads</li>
+                <li><strong>Use gpt-5-nano</strong> when qualification criteria are simple and clear-cut</li>
+                <li><strong>Use gpt-4o</strong> for complex multi-factor decisions or when accuracy is critical</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted);">
+            <p>Qualifying Agentic System Documentation v2.0</p>
+            <p style="margin-top: 10px; font-size: 13px;">Last updated: January 2026</p>
+        </footer>
+    </main>
+
+    <script>
+        // Highlight active nav link on scroll
+        const sections = document.querySelectorAll('.section, .hero');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

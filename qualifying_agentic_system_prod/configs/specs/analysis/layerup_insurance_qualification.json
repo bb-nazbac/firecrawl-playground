@@ -1,0 +1,370 @@
+{
+  "spec_name": "layerup_insurance_qualification",
+  "version": "2.1",
+  "description": "Classify insurance companies for Layerup outreach. Target P&C carriers and TPAs with high-volume claims operations suitable for AI-powered claims automation.",
+
+  "client": {
+    "who_we_target": "Property & Casualty (P&C) insurance carriers with high claims volume, especially auto and property insurers. Also TPAs and claims adjusting firms that handle P&C claims. Must have 1,000+ employees and significant inbound phone/claims operations.",
+    "geography_priority": ["Mexico", "US", "Europe"],
+    "product_focus": "AI Agents that automate claims processing: FNOL (First Notice of Loss) intake via phone/email, repair estimates for auto/property damage, and faster claims adjudication."
+  },
+
+  "waterfall_filter": {
+    "enabled": true,
+    "description": "Cheap pre-qualification filter to quickly disqualify companies that clearly don't fit before running full qualification.",
+    "questions": [
+      {
+        "field": "is_insurance_company",
+        "prompt": "Is this an insurance carrier, TPA (Third Party Administrator), or claims adjusting firm? Not a broker/agent, software vendor, or consulting firm?",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "handles_claims",
+        "prompt": "Does this company handle insurance claims (FNOL intake, claims processing, claims adjusting)? Not just underwriting or policy sales?",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      }
+    ],
+    "disqualify_rules": [
+      {
+        "if_field": "is_insurance_company",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "NOT_INSURANCE_COMPANY",
+        "log_message": "Not an insurance carrier, TPA, or claims adjuster"
+      },
+      {
+        "if_field": "handles_claims",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "NO_CLAIMS_OPERATIONS",
+        "log_message": "Does not handle claims (broker/agent only)"
+      }
+    ],
+    "output_schema": {
+      "is_insurance_company": "YES/NO/UNKNOWN",
+      "handles_claims": "YES/NO/UNKNOWN",
+      "confidence_insurance": "HIGH/MEDIUM/LOW",
+      "confidence_claims": "HIGH/MEDIUM/LOW",
+      "evidence": "one sentence of evidence"
+    },
+    "closing_instruction": "Be decisive. If clearly a broker, software vendor, or health insurer, say NO to the relevant question."
+  },
+
+  "what_layerup_does": {
+    "summary": "Layerup provides AI voice agents that automate insurance claims calls. Their AI handles inbound FNOL calls, processes repair estimates, and speeds up claims resolution.",
+    "key_use_cases": [
+      "Automating FNOL (First Notice of Loss) phone intake - when a customer calls to report an accident or property damage",
+      "Processing repair estimates for auto body damage or property repairs",
+      "Outbound calls for claims status updates and missing documentation",
+      "Reducing call center headcount while improving claims processing speed"
+    ],
+    "why_p_and_c": "P&C insurers (auto, home, property) have HIGH frequency claims with phone-heavy intake processes. Health and life insurers have different workflows that don't fit Layerup's product."
+  },
+
+  "categories": [
+    {
+      "name": "P_AND_C_CARRIER",
+      "description": "Property & Casualty insurance carriers that underwrite auto, home, property, or multi-line personal insurance. Must have direct claims operations with high volume.",
+      "examples": [
+        "Allstate - large US auto and home insurer",
+        "Nationwide - multi-line P&C carrier",
+        "The Hartford - P&C and auto insurance",
+        "Liberty Mutual - auto, home, property",
+        "Progressive - auto insurance focus",
+        "GEICO - high-volume auto insurer",
+        "State Farm - auto and home",
+        "AXA - global multi-line with strong P&C",
+        "Allianz - global P&C carrier",
+        "MAPFRE - Spanish P&C insurer with LatAm presence",
+        "GNP Seguros - Mexican P&C carrier",
+        "Qualitas - Mexican auto insurer"
+      ],
+      "look_for": [
+        "Auto insurance products (car insurance, vehicle coverage, collision, comprehensive)",
+        "Home/property insurance (homeowners, renters, dwelling, property damage)",
+        "Claims filing for accidents, collisions, property damage, theft, weather damage",
+        "Repair network partnerships (auto body shops, contractors, glass repair)",
+        "Large employee count (1,000+) with dedicated claims staff"
+      ]
+    },
+    {
+      "name": "TPA_CLAIMS_ADJUSTER",
+      "description": "Third Party Administrators and claims adjusting firms that handle P&C claims on behalf of carriers. Must have high claims volume and 1,000+ employees.",
+      "examples": [
+        "Sedgwick - large TPA handling P&C claims",
+        "Crawford & Company - global claims management",
+        "Broadspire (a Crawford company) - claims adjusting",
+        "Gallagher Bassett - TPA for P&C claims",
+        "ESIS (Chubb's TPA) - claims administration",
+        "Helmsman Management Services - claims TPA",
+        "CoreLogic (property claims analytics)",
+        "Solera (auto claims and repair estimates)"
+      ],
+      "look_for": [
+        "Third party claims administration",
+        "Claims adjusting services",
+        "Auto damage appraisals or repair estimates",
+        "Property damage assessment",
+        "FNOL intake services for insurance clients",
+        "Independent adjusting",
+        "Catastrophe (CAT) claims handling"
+      ]
+    },
+    {
+      "name": "MGA_MGU",
+      "description": "Managing General Agents/Underwriters that underwrite P&C policies AND handle claims. Must have claims authority, not just underwriting.",
+      "examples": [
+        "AmWINS - large MGA with some claims handling",
+        "RT Specialty - MGA with delegated authority",
+        "Various regional MGAs with binding authority and claims handling"
+      ],
+      "look_for": [
+        "Delegated claims authority from carriers",
+        "In-house claims adjusting",
+        "Binding authority for P&C policies",
+        "Must handle claims, not just underwrite"
+      ],
+      "note": "Many MGAs only do underwriting/distribution with no claims role - these are DISQUALIFIED"
+    },
+    {
+      "name": "DISQUALIFIED",
+      "description": "Does not fit Layerup's ICP. See disqualification_rules for specific types."
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Cannot determine from available information whether company qualifies."
+    }
+  ],
+
+  "disqualification_rules": [
+    {
+      "reason": "HEALTH_INSURER",
+      "description": "Health insurance companies - different claims workflow, not a fit",
+      "examples": ["UnitedHealthcare", "Anthem", "Cigna", "Humana", "Kaiser Permanente", "Aetna", "Blue Cross Blue Shield (health plans)", "Oscar Health", "Centene", "Molina Healthcare"],
+      "signals": ["health insurance", "medical claims", "healthcare coverage", "pharmacy benefits", "Medicare Advantage", "Medicaid managed care", "hospital networks", "prior authorization"]
+    },
+    {
+      "reason": "LIFE_INSURER_ONLY",
+      "description": "Life insurance-only companies - low claims frequency, different process",
+      "examples": ["Prudential (life only)", "MetLife (life focus)", "New York Life", "Northwestern Mutual", "MassMutual", "Lincoln Financial", "Principal Life", "Transamerica"],
+      "signals": ["life insurance only", "term life", "whole life", "annuities", "death benefits", "beneficiary claims"],
+      "note": "If a company does BOTH life AND P&C, they may still qualify if P&C operations are significant"
+    },
+    {
+      "reason": "COMMERCIAL_SPECIALTY_ONLY",
+      "description": "Commercial or specialty insurers only - low volume, complex claims not suited for AI automation",
+      "examples": ["AIG (commercial focus)", "Chubb (commercial/specialty)", "CNA", "Travelers (commercial lines)", "Markel", "W.R. Berkley", "Arch Capital", "RenaissanceRe"],
+      "signals": ["commercial insurance only", "specialty lines", "professional liability", "D&O", "E&O", "cyber insurance", "marine", "aviation", "excess & surplus"],
+      "note": "Companies with BOTH commercial and personal lines may qualify if personal lines are significant"
+    },
+    {
+      "reason": "REINSURER",
+      "description": "Reinsurance companies - no direct claims handling with consumers",
+      "examples": ["Munich Re", "Swiss Re", "Hannover Re", "SCOR", "RGA", "Everest Re", "Transatlantic Re", "Gen Re"],
+      "signals": ["reinsurance", "treaty reinsurance", "facultative reinsurance", "retrocession", "ceding company"]
+    },
+    {
+      "reason": "BROKER_AGENT_ONLY",
+      "description": "Insurance brokers or agents that only sell policies - no claims handling",
+      "examples": ["Marsh McLennan", "Aon", "Willis Towers Watson", "Arthur J. Gallagher (brokerage side)", "Brown & Brown", "Hub International", "Lockton", "NFP"],
+      "signals": ["insurance brokerage", "insurance agency", "policy placement", "risk consulting", "no claims operations", "independent agent"]
+    },
+    {
+      "reason": "INSURTECH_VENDOR",
+      "description": "Insurtech or software companies that sell TO insurers - not insurers themselves",
+      "examples": ["Guidewire", "Duck Creek", "Majesco", "Snapsheet", "Tractable", "CCC Intelligent Solutions", "Verisk", "LexisNexis Risk Solutions", "Shift Technology"],
+      "signals": ["insurance software", "claims software", "SaaS for insurance", "insurtech platform", "AI for insurance (as a vendor)", "policy administration system"]
+    },
+    {
+      "reason": "TOO_SMALL",
+      "description": "Company has fewer than 1,000 employees OR evidence of very low claims volume",
+      "signals": ["small regional agency", "boutique insurer", "startup", "fewer than 50 claims staff"]
+    },
+    {
+      "reason": "DNC_ACCOUNT",
+      "description": "Account is on the Do Not Contact list (existing customer or explicitly excluded)"
+    }
+  ],
+
+  "identification_signals": {
+    "strong_positive": [
+      "Auto insurance claims - collision, comprehensive, liability claims",
+      "Property claims - homeowners, dwelling, fire, water damage, theft",
+      "FNOL (First Notice of Loss) processes mentioned",
+      "Repair estimates - auto body, property repair, contractor networks",
+      "Claims call center or contact center operations",
+      "High claims volume metrics mentioned",
+      "24/7 claims hotline",
+      "Mobile claims filing apps (indicates high volume)",
+      "Catastrophe (CAT) response teams",
+      "Auto body shop or contractor networks",
+      "Glass repair partnerships (Safelite, etc.)",
+      "Total loss vehicle processing",
+      "Subrogation operations"
+    ],
+    "positive": [
+      "Hiring for claims adjusters, claims representatives, call center reps",
+      "AI or digital transformation initiatives",
+      "Innovation lab or insurtech partnerships",
+      "Multiple locations or large geographic footprint",
+      "High employee count (5,000+)",
+      "Customer service emphasis"
+    ],
+    "negative": [
+      "Health insurance focus",
+      "Life insurance only",
+      "Commercial lines only",
+      "Reinsurance",
+      "Brokerage or agency only",
+      "Software/tech vendor",
+      "Consulting services",
+      "No mention of claims operations"
+    ],
+    "pages_to_check": [
+      "Claims page - look for 'File a Claim', 'Report a Claim', 'Claims Process'",
+      "Products page - look for auto, home, property insurance products",
+      "About page - company size, history, lines of business",
+      "Careers page - hiring for claims roles indicates volume",
+      "Contact page - claims hotline numbers indicate phone operations"
+    ]
+  },
+
+  "questions": [
+    {
+      "field": "is_p_and_c_insurer",
+      "question": "Is this a Property & Casualty insurer, TPA, or claims adjuster (handles auto, home, or property insurance/claims)?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true
+    },
+    {
+      "field": "has_claims_operations",
+      "question": "Does this company directly handle claims (FNOL intake, claims processing, claims adjusting)?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true
+    },
+    {
+      "field": "has_auto_or_property_claims",
+      "question": "Does this company specifically handle auto collision claims or property damage claims that involve repair estimates?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true
+    },
+    {
+      "field": "has_scale",
+      "question": "Does this company have 1,000+ employees OR clear evidence of high claims volume (large claims team, multiple call centers)?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": false
+    },
+    {
+      "field": "has_phone_claims_operations",
+      "question": "Is there evidence of phone-based claims operations (claims hotline, FNOL by phone, claims call center)?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": false
+    },
+    {
+      "field": "serves_personal_lines",
+      "question": "Does this company serve personal/consumer lines (individual auto, homeowners) rather than purely commercial?",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": false
+    },
+    {
+      "field": "primary_category",
+      "question": "What type of entity is this: P_AND_C_CARRIER (insurance company), TPA_CLAIMS_ADJUSTER (third party claims handler), or MGA_MGU (managing general agent with claims authority)?",
+      "answer_type": "enum",
+      "answer_options": ["P_AND_C_CARRIER", "TPA_CLAIMS_ADJUSTER", "MGA_MGU", "NOT_APPLICABLE"],
+      "is_critical": true
+    }
+  ],
+
+  "classification_logic": {
+    "description": "Apply these rules IN ORDER to determine final_classification",
+    "apply_in_order": [
+      { "if": "company is on DNC list", "then": "DISQUALIFIED", "reason": "DNC_ACCOUNT" },
+      { "if": "company is health insurer", "then": "DISQUALIFIED", "reason": "HEALTH_INSURER" },
+      { "if": "company is life insurance ONLY (no P&C)", "then": "DISQUALIFIED", "reason": "LIFE_INSURER_ONLY" },
+      { "if": "company is reinsurer", "then": "DISQUALIFIED", "reason": "REINSURER" },
+      { "if": "company is broker/agent only (no claims)", "then": "DISQUALIFIED", "reason": "BROKER_AGENT_ONLY" },
+      { "if": "company is insurtech/software vendor", "then": "DISQUALIFIED", "reason": "INSURTECH_VENDOR" },
+      { "if": "company is commercial/specialty ONLY", "then": "DISQUALIFIED", "reason": "COMMERCIAL_SPECIALTY_ONLY" },
+      { "if": "is_p_and_c_insurer = YES AND has_claims_operations = YES", "then": "Use primary_category" },
+      { "if": "too many UNKNOWN/INSUFFICIENT", "then": "INSUFFICIENT_INFO" }
+    ]
+  },
+
+  "iteration_logic": {
+    "critical_questions": ["is_p_and_c_insurer", "has_claims_operations", "has_auto_or_property_claims", "primary_category"],
+    "stop_conditions": [
+      "All confidence values are HIGH",
+      "All confidence values are at least MEDIUM and classification is clear",
+      "max_iterations reached",
+      "max_pages reached"
+    ],
+    "page_type_hints": {
+      "is_p_and_c_insurer": ["about", "products", "insurance-products"],
+      "has_claims_operations": ["claims", "file-a-claim", "report-claim", "claims-process"],
+      "has_auto_or_property_claims": ["auto-insurance", "home-insurance", "claims", "repair"],
+      "has_scale": ["about", "careers", "locations", "company-info"],
+      "has_phone_claims_operations": ["contact", "claims", "customer-service"],
+      "serves_personal_lines": ["personal-insurance", "auto", "home", "products"]
+    }
+  },
+
+  "dnc_list": {
+    "description": "Do Not Contact - existing customers or explicitly excluded",
+    "accounts": [
+      { "name": "Chubb Mexico", "note": "Chubb US is OK" },
+      { "name": "Chubb Latam", "note": "Chubb US is OK" },
+      { "name": "MetLife Mexico", "note": "MetLife US and other regions OK" },
+      { "name": "MSI MGA", "domain": "msimga.com" },
+      { "name": "Davies Group", "domain": "davies-group.com" },
+      { "name": "Thebest claims" }
+    ]
+  },
+
+  "target_accounts": {
+    "description": "Priority accounts - if you encounter these, they are HIGH priority qualified",
+    "accounts": [
+      "Nationwide",
+      "The Hartford",
+      "Allstate",
+      "Great American Insurance Group",
+      "GNP Seguros",
+      "AXA México",
+      "MAPFRE México",
+      "Seguros Atlas",
+      "Allianz México",
+      "Tokio Marine",
+      "Liberty Mutual"
+    ]
+  },
+
+  "examples": {
+    "qualified": [
+      {"description": "Large US auto and home insurer with claims hotline", "category": "P_AND_C_CARRIER"},
+      {"description": "Mexican auto insurer with high claims volume", "category": "P_AND_C_CARRIER"},
+      {"description": "Global TPA handling P&C claims for multiple carriers", "category": "TPA_CLAIMS_ADJUSTER"},
+      {"description": "Claims adjusting firm with auto damage appraisals", "category": "TPA_CLAIMS_ADJUSTER"},
+      {"description": "MGA with delegated claims authority and in-house adjusters", "category": "MGA_MGU"}
+    ],
+    "disqualified": [
+      {"description": "Health insurance company", "reason": "HEALTH_INSURER"},
+      {"description": "Life insurance only with no P&C products", "reason": "LIFE_INSURER_ONLY"},
+      {"description": "Commercial lines specialist (D&O, cyber)", "reason": "COMMERCIAL_SPECIALTY_ONLY"},
+      {"description": "Global reinsurance company", "reason": "REINSURER"},
+      {"description": "Insurance brokerage with no claims operations", "reason": "BROKER_AGENT_ONLY"},
+      {"description": "Claims software vendor selling to insurers", "reason": "INSURTECH_VENDOR"},
+      {"description": "Small regional agency with 50 employees", "reason": "TOO_SMALL"}
+    ]
+  },
+
+  "llm": {
+    "model": "gpt-5-mini",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}

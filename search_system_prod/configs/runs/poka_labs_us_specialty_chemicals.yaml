@@ -1,0 +1,253 @@
+# Poka Labs - US Specialty Chemical/Materials Manufacturers & Distributors
+# Search across 300+ major US cities
+
+client: poka_labs
+
+search:
+  query: "Specialty chemical/materials manufacturers or distributors in {city}"
+  gl: "us"
+  cities:
+    - New York City, United States
+    - Los Angeles, United States
+    - Chicago, United States
+    - Houston, United States
+    - Phoenix, United States
+    - Philadelphia, United States
+    - San Antonio, United States
+    - San Diego, United States
+    - Dallas, United States
+    - Fort Worth, United States
+    - Jacksonville, United States
+    - Austin, United States
+    - San Jose, United States
+    - Charlotte, United States
+    - Columbus, United States
+    - Indianapolis, United States
+    - San Francisco, United States
+    - Seattle, United States
+    - Denver, United States
+    - Oklahoma City, United States
+    - Washington, United States
+    - Nashville, United States
+    - Las Vegas, United States
+    - El Paso, United States
+    - Boston, United States
+    - Detroit, United States
+    - Louisville, United States
+    - Portland, United States
+    - Memphis, United States
+    - Baltimore, United States
+    - Milwaukee, United States
+    - Albuquerque, United States
+    - Tucson, United States
+    - Fresno, United States
+    - Sacramento, United States
+    - Atlanta, United States
+    - Mesa, United States
+    - Kansas City, United States
+    - Raleigh, United States
+    - Miami, United States
+    - Colorado Springs, United States
+    - Omaha, United States
+    - Virginia Beach, United States
+    - Long Beach, United States
+    - Oakland, United States
+    - Minneapolis, United States
+    - Tampa, United States
+    - Bakersfield, United States
+    - Tulsa, United States
+    - Aurora, United States
+    - Arlington, United States
+    - Wichita, United States
+    - Cleveland, United States
+    - Henderson, United States
+    - New Orleans, United States
+    - Honolulu, United States
+    - Anaheim, United States
+    - Orlando, United States
+    - Lexington, United States
+    - Stockton, United States
+    - Riverside, United States
+    - Irvine, United States
+    - Newark, United States
+    - Santa Ana, United States
+    - Corpus Christi, United States
+    - Cincinnati, United States
+    - Greensboro, United States
+    - Pittsburgh, United States
+    - Durham, United States
+    - St. Paul, United States
+    - Jersey City, United States
+    - Lincoln, United States
+    - North Las Vegas, United States
+    - Plano, United States
+    - Gilbert, United States
+    - Anchorage, United States
+    - Madison, United States
+    - Reno, United States
+    - Chandler, United States
+    - Chula Vista, United States
+    - Buffalo, United States
+    - Lubbock, United States
+    - Fort Wayne, United States
+    - St. Louis, United States
+    - Port St. Lucie, United States
+    - St. Petersburg, United States
+    - Toledo, United States
+    - Laredo, United States
+    - Glendale, United States
+    - Irving, United States
+    - Winston-Salem, United States
+    - Chesapeake, United States
+    - Enterprise, United States
+    - Garland, United States
+    - Scottsdale, United States
+    - Frisco, United States
+    - Cape Coral, United States
+    - Hialeah, United States
+    - Boise City, United States
+    - Richmond, United States
+    - McKinney, United States
+    - Huntsville, United States
+    - Spokane, United States
+    - Spring Valley, United States
+    - Tacoma, United States
+    - Norfolk, United States
+    - Santa Clarita, United States
+    - Fremont, United States
+    - San Bernardino, United States
+    - Salt Lake City, United States
+    - Modesto, United States
+    - Fontana, United States
+    - Baton Rouge, United States
+    - Moreno Valley, United States
+    - Worcester, United States
+    - Sioux Falls, United States
+    - Des Moines, United States
+    - Yonkers, United States
+    - Grand Prairie, United States
+    - Fayetteville, United States
+    - Tallahassee, United States
+    - Rochester, United States
+    - Little Rock, United States
+    - Amarillo, United States
+    - Overland Park, United States
+    - Peoria, United States
+    - Augusta, United States
+    - Vancouver, United States
+    - Knoxville, United States
+    - Sunrise Manor, United States
+    - Grand Rapids, United States
+    - Oxnard, United States
+    - Mobile, United States
+    - Providence, United States
+    - Birmingham, United States
+    - Montgomery, United States
+    - Chattanooga, United States
+    - Brownsville, United States
+    - Fort Lauderdale, United States
+    - Huntington Beach, United States
+    - Tempe, United States
+    - Clarksville, United States
+    - Akron, United States
+    - Ontario, United States
+    - Cary, United States
+    - Elk Grove, United States
+    - Newport News, United States
+    - Salem, United States
+    - Pembroke Pines, United States
+    - Paradise, United States
+    - Eugene, United States
+    - Santa Rosa, United States
+    - Rancho Cucamonga, United States
+    - Shreveport, United States
+    - Surprise, United States
+    - Garden Grove, United States
+    - Denton, United States
+    - Murfreesboro, United States
+    - Fort Collins, United States
+    - Springfield, United States
+    - Oceanside, United States
+    - Roseville, United States
+    - Lancaster, United States
+    - Corona, United States
+    - Killeen, United States
+    - Palmdale, United States
+    - Paterson, United States
+    - Hollywood, United States
+    - Salinas, United States
+    - Charleston, United States
+    - Alexandria, United States
+    - Hayward, United States
+    - Sunnyvale, United States
+    - Macon-Bibb County, United States
+    - Lakewood, United States
+    - Bellevue, United States
+    - Naperville, United States
+    - Bridgeport, United States
+    - Joliet, United States
+    - Olathe, United States
+    - McAllen, United States
+    - Gainesville, United States
+    - Mesquite, United States
+    - Pasadena, United States
+    - Savannah, United States
+    - Escondido, United States
+    - Waco, United States
+    - Thornton, United States
+    - Palm Bay, United States
+    - Visalia, United States
+    - Pomona, United States
+    - Rockford, United States
+    - Columbia, United States
+    - Midland, United States
+    - Syracuse, United States
+    - Miramar, United States
+    - Meridian, United States
+    - Coral Springs, United States
+    - Victorville, United States
+    - Elizabeth, United States
+    - Metairie, United States
+    - Stamford, United States
+    - New Haven, United States
+    - Fullerton, United States
+    - Round Rock, United States
+    - Fargo, United States
+    - Jackson, United States
+    - Lewisville, United States
+    - Cedar Rapids, United States
+    - Torrance, United States
+    - West Valley City, United States
+    - Hampton, United States
+    - Orange, United States
+    - Warren, United States
+    - Kent, United States
+    - Dayton, United States
+    - Carrollton, United States
+    - Sterling Heights, United States
+    - Santa Clara, United States
+    - Lehigh Acres, United States
+    - Abilene, United States
+    - Norman, United States
+    - Pearland, United States
+    - West Palm Beach, United States
+    - College Station, United States
+    - Clovis, United States
+    - Athens, United States
+    - North Charleston, United States
+    - Lakeland, United States
+    - Wilmington, United States
+    - Allentown, United States
+    - Simi Valley, United States
+    - Topeka, United States
+    - Broken Arrow, United States
+    - The Woodlands, United States
+    - Concord, United States
+    - Thousand Oaks, United States
+    - Fairfield, United States
+    - Goodyear, United States
+    - Vallejo, United States
+    - Ann Arbor, United States
+  results_per_city: 250
+
+analysis_spec: specialty_chemical_analysis

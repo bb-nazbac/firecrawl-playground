@@ -1,0 +1,85 @@
+{
+  "spec_name": "food_distributor_analysis",
+  "description": "Analysis spec for food and beverage distributors - identify distribution businesses, online portals, and buying group affiliations",
+
+  "categories": [
+    {
+      "id": "food_distributor",
+      "label": "Food Distributor",
+      "description": "Business primarily distributes food products (produce, meat, dairy, dry goods, etc.)"
+    },
+    {
+      "id": "beverage_distributor",
+      "label": "Beverage Distributor",
+      "description": "Business primarily distributes beverage products (soft drinks, alcohol, water, juice, etc.)"
+    },
+    {
+      "id": "food_beverage_distributor",
+      "label": "Food & Beverage Distributor",
+      "description": "Business distributes both food and beverage products"
+    },
+    {
+      "id": "not_distributor",
+      "label": "Not a Distributor",
+      "description": "Business is not a distributor (e.g., manufacturer, retailer, restaurant, grocery store)"
+    },
+    {
+      "id": "unrelated",
+      "label": "Unrelated Business",
+      "description": "Completely unrelated to food or beverage distribution"
+    }
+  ],
+
+  "extraction_fields": {
+    "business_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official name of the business or company"
+    },
+    "website": {
+      "type": "string",
+      "required": false,
+      "description": "Official website URL"
+    },
+    "phone": {
+      "type": "string",
+      "required": false,
+      "description": "Primary contact phone number"
+    },
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Full street address or business location"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "distributes_food_or_beverage",
+      "question": "Does this business mainly distribute food or beverage products?",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "has_online_portal",
+      "question": "Does this business have an online portal evidenced by something like a 'shop' or 'log in' button/link?",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "buying_group_affiliation",
+      "question": "Does this business have any evidence of belonging to a buying group or association? If so, what are they? Provide as a comma-separated list, or leave blank if none found.",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    }
+  ],
+
+  "llm": {
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 1500,
+    "temperature": 0
+  }
+}

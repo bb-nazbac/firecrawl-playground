@@ -1,0 +1,111 @@
+# Doppel - Spain Dental Clinics (Top 100 Cities)
+# Search for dental clinics across Spain's 100 largest cities
+
+client: doppel
+
+search:
+  query: "Clínicas dentales en {city}"
+  cities:
+    - Madrid, Spain
+    - Barcelona, Spain
+    - Valencia, Spain
+    - Seville, Spain
+    - Zaragoza, Spain
+    - Málaga, Spain
+    - Murcia, Spain
+    - Palma, Spain
+    - Las Palmas de Gran Canaria, Spain
+    - Bilbao, Spain
+    - Alicante, Spain
+    - Córdoba, Spain
+    - Valladolid, Spain
+    - Vigo, Spain
+    - Gijón, Spain
+    - L'Hospitalet de Llobregat, Spain
+    - Vitoria-Gasteiz, Spain
+    - A Coruña, Spain
+    - Elche, Spain
+    - Granada, Spain
+    - Terrassa, Spain
+    - Badalona, Spain
+    - Oviedo, Spain
+    - Cartagena, Spain
+    - Sabadell, Spain
+    - Jerez de la Frontera, Spain
+    - Móstoles, Spain
+    - Santa Cruz de Tenerife, Spain
+    - Pamplona, Spain
+    - Almería, Spain
+    - Alcalá de Henares, Spain
+    - Fuenlabrada, Spain
+    - Leganés, Spain
+    - Donostia, Spain
+    - Getafe, Spain
+    - Burgos, Spain
+    - Albacete, Spain
+    - Santander, Spain
+    - Castellón de la Plana, Spain
+    - Alcorcón, Spain
+    - San Cristóbal de La Laguna, Spain
+    - Logroño, Spain
+    - Badajoz, Spain
+    - Salamanca, Spain
+    - Huelva, Spain
+    - Marbella, Spain
+    - Lleida, Spain
+    - Tarragona, Spain
+    - Dos Hermanas, Spain
+    - Torrejón de Ardoz, Spain
+    - Parla, Spain
+    - Mataró, Spain
+    - León, Spain
+    - Algeciras, Spain
+    - Santa Coloma de Gramenet, Spain
+    - Alcobendas, Spain
+    - Cádiz, Spain
+    - Jaén, Spain
+    - Ourense, Spain
+    - Reus, Spain
+    - Telde, Spain
+    - Girona, Spain
+    - Barakaldo, Spain
+    - Lugo, Spain
+    - Santiago de Compostela, Spain
+    - Roquetas de Mar, Spain
+    - Cáceres, Spain
+    - Las Rozas de Madrid, Spain
+    - San Fernando, Spain
+    - Lorca, Spain
+    - Sant Cugat del Vallès, Spain
+    - San Sebastián de los Reyes, Spain
+    - Cornellà de Llobregat, Spain
+    - El Puerto de Santa María, Spain
+    - Rivas-Vaciamadrid, Spain
+    - Melilla, Spain
+    - Pozuelo de Alarcón, Spain
+    - Guadalajara, Spain
+    - Toledo, Spain
+    - Ceuta, Spain
+    - Chiclana de la Frontera, Spain
+    - Sant Boi de Llobregat, Spain
+    - El Ejido, Spain
+    - Talavera de la Reina, Spain
+    - Torrevieja, Spain
+    - Pontevedra, Spain
+    - Mijas, Spain
+    - Torrent, Spain
+    - Coslada, Spain
+    - Vélez-Málaga, Spain
+    - Arona, Spain
+    - Fuengirola, Spain
+    - Palencia, Spain
+    - Avilés, Spain
+    - Getxo, Spain
+    - Manresa, Spain
+    - Rubí, Spain
+    - Orihuela, Spain
+    - Valdemoro, Spain
+    - Alcalá de Guadaíra, Spain
+  results_per_city: 25
+
+analysis_spec: dental_clinic_analysis

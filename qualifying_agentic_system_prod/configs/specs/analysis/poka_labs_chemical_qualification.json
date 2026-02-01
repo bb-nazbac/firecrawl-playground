@@ -1,0 +1,237 @@
+{
+  "spec_name": "poka_labs_chemical_qualification",
+  "description": "Qualify chemical companies for Poka Labs sales outreach. Identifies specialty chemical sellers and categorizes them.",
+  "version": "1.1",
+
+  "waterfall_filter": {
+    "enabled": true,
+    "description": "Cheap pre-qualification filter to disqualify companies that clearly don't fit before running full qualification.",
+    "questions": [
+      {
+        "field": "sells_products",
+        "prompt": "Does this company SELL chemical/technical products (has product catalog, product pages, products listed)? Or do they ONLY provide services/software/logistics/equipment/testing/contract manufacturing?",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "is_b2b",
+        "prompt": "Is this company B2B/wholesale/industrial (sells to businesses)? Or retail/DTC consumer-focused only?",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      }
+    ],
+    "disqualify_rules": [
+      {
+        "if_field": "sells_products",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "NOT_PRODUCT_SELLER",
+        "log_message": "Does not sell products"
+      },
+      {
+        "if_field": "is_b2b",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "RETAIL_ONLY",
+        "log_message": "Not B2B (retail/DTC only)"
+      }
+    ],
+    "output_schema": {
+      "sells_products": "YES/NO/UNKNOWN",
+      "is_b2b": "YES/NO/UNKNOWN",
+      "confidence_sells": "HIGH/MEDIUM/LOW",
+      "confidence_b2b": "HIGH/MEDIUM/LOW",
+      "evidence": "one sentence of evidence"
+    },
+    "closing_instruction": "Be decisive. If clearly a service company or retail brand, say NO."
+  },
+
+  "categories": [
+    {
+      "name": "CHEMICAL",
+      "description": "Adhesives, coatings, resins, solvents, surfactants, polymers, catalysts, additives, paints, inks, pigments, lubricants, greases, industrial fluids, food ingredients, flavor chemicals, agrochemicals, fertilizers"
+    },
+    {
+      "name": "PHARMA",
+      "description": "Pharma intermediates, API precursors, lab chemicals, reagents, diagnostic materials, life science supplies, research chemicals, biotech materials"
+    },
+    {
+      "name": "ENGINEERED_MATERIALS",
+      "description": "Graphite, carbon materials, engineered plastics, thermoplastics, composites, technical ceramics, abrasives, advanced materials, specialty alloys"
+    },
+    {
+      "name": "OTHER_TECHNICAL",
+      "description": "B2B technical/specialty products not in above categories: water treatment chemicals, electronic chemicals, construction chemicals, oilfield chemicals, mining chemicals, textile chemicals, personal care ingredients, nutraceutical ingredients, veterinary ingredients, cleaning/sanitation chemicals, industrial gases, converted products"
+    },
+    {
+      "name": "DISQUALIFIED_COMMODITY",
+      "description": "Sells only bulk/commodity chemicals with public price indexes (methanol, ethanol, benzene, toluene, xylene, sulfuric acid, sodium hydroxide, ammonia, acetone, HDPE, LDPE, PP, PET, PVC, propane, butane)"
+    },
+    {
+      "name": "DISQUALIFIED_NOT_PRODUCT_SELLER",
+      "description": "Does not sell chemical products: services-only, consulting, logistics, equipment/machinery, software, testing labs, certifications, marketplaces"
+    },
+    {
+      "name": "DISQUALIFIED_RETAIL_ONLY",
+      "description": "Consumer brands with no B2B/wholesale arm"
+    },
+    {
+      "name": "DISQUALIFIED_BROKER_ONLY",
+      "description": "Import/export traders or brokers with no manufacturing or inventory"
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Cannot determine classification from available content"
+    }
+  ],
+
+  "extraction_fields": {
+    "company_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official company name as displayed on website"
+    },
+    "products_found": {
+      "type": "array",
+      "required": true,
+      "description": "3-5 specific product names or categories found"
+    },
+    "business_model": {
+      "type": "string",
+      "required": true,
+      "description": "Manufacturer, Distributor, Both, or Unknown"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "sells_chemical_products",
+      "question": "Does this company actually SELL chemical products they own, manufacture, or stock inventory of? (Not just services, consulting, logistics, equipment, or brokerage)",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "is_b2b",
+      "question": "Is this company primarily B2B (business-to-business) rather than retail/direct-to-consumer?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "product_type",
+      "question": "What type of chemical products does this company primarily sell?",
+      "answer_type": "string",
+      "answer_options": ["SPECIALTY", "COMMODITY", "MIXED", "NOT_CHEMICAL_PRODUCTS"],
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "COMMODITY = bulk chemicals with public price indexes (methanol, benzene, HDPE, etc.), sold in bulk with minimal customization. SPECIALTY = formulated/customized chemicals with value-added services, custom formulations, branded products, technical documentation. MIXED = significant offerings in both categories."
+    },
+    {
+      "field": "specialty_signals",
+      "question": "What specialty chemical signals are present? (Check all that apply: custom formulation services, multiple product grades/variants, technical documentation TDS/SDS, branded products with trademarks, application-specific solutions, R&D partnerships, detailed case studies)",
+      "answer_type": "array",
+      "reasoning_required": false,
+      "evidence_required": true
+    },
+    {
+      "field": "has_inventory_or_manufacturing",
+      "question": "Does this company have manufacturing capability OR stock inventory? (vs pure broker/trading agent)",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "requires_technical_specs",
+      "question": "Do their products require technical specifications, SDS/TDS, or product knowledge to quote?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "evidence_required": false
+    },
+    {
+      "field": "pages_reviewed",
+      "question": "Which pages were most useful for this classification?",
+      "answer_type": "array",
+      "reasoning_required": false,
+      "evidence_required": false
+    },
+    {
+      "field": "contradicting_signals",
+      "question": "Were there any signals that contradicted your final classification?",
+      "answer_type": "string",
+      "reasoning_required": false,
+      "evidence_required": false
+    }
+  ],
+
+  "classification_logic": {
+    "description": "Apply these rules in order to determine final category",
+    "rules": [
+      {
+        "order": 1,
+        "condition": "sells_chemical_products = false",
+        "result": "DISQUALIFIED_NOT_PRODUCT_SELLER"
+      },
+      {
+        "order": 2,
+        "condition": "is_b2b = false",
+        "result": "DISQUALIFIED_RETAIL_ONLY"
+      },
+      {
+        "order": 3,
+        "condition": "has_inventory_or_manufacturing = false",
+        "result": "DISQUALIFIED_BROKER_ONLY"
+      },
+      {
+        "order": 4,
+        "condition": "product_type = COMMODITY",
+        "result": "DISQUALIFIED_COMMODITY"
+      },
+      {
+        "order": 5,
+        "condition": "product_type = SPECIALTY or MIXED",
+        "result": "Assign most appropriate category: PHARMA (if pharma/life science focus) > ENGINEERED_MATERIALS (if materials focus) > CHEMICAL (if general chemical focus) > OTHER_TECHNICAL (if technical but none of above)"
+      },
+      {
+        "order": 6,
+        "condition": "insufficient information to determine",
+        "result": "INSUFFICIENT_INFO"
+      }
+    ],
+    "category_priority_note": "When company spans multiple categories, use primary revenue/focus. For conglomerates, only qualify if the page content is about a relevant division."
+  },
+
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 4,
+    "required_questions": ["sells_chemical_products", "product_type", "is_b2b"],
+    "min_confidence": "medium",
+    "prompt_addition": "Before answering, assess if the provided content contains enough information to confidently classify this company. If key information is missing (e.g., no products page found, unclear business model), indicate what additional pages would help: 'products page', 'about page', 'services page'."
+  },
+
+  "examples": {
+    "qualified": [
+      {"description": "Specialty adhesives manufacturer", "category": "CHEMICAL"},
+      {"description": "Lab reagent supplier with inventory", "category": "PHARMA"},
+      {"description": "Graphite parts manufacturer", "category": "ENGINEERED_MATERIALS"},
+      {"description": "Water treatment chemical supplier", "category": "OTHER_TECHNICAL"},
+      {"description": "Electronic chemicals (photoresists)", "category": "OTHER_TECHNICAL"},
+      {"description": "Oilfield chemicals manufacturer", "category": "OTHER_TECHNICAL"},
+      {"description": "Personal care ingredients (B2B)", "category": "OTHER_TECHNICAL"},
+      {"description": "Industrial gas blender with inventory", "category": "OTHER_TECHNICAL"},
+      {"description": "Specialty chemical distributor (stocks inventory)", "category": "CHEMICAL"}
+    ],
+    "disqualified": [
+      {"description": "Bulk acetone distributor (commodity only)", "category": "DISQUALIFIED_COMMODITY"},
+      {"description": "Consumer paint brand (retail only)", "category": "DISQUALIFIED_RETAIL_ONLY"},
+      {"description": "Chemical trading company (no inventory)", "category": "DISQUALIFIED_BROKER_ONLY"},
+      {"description": "CNC machine shop", "category": "DISQUALIFIED_NOT_PRODUCT_SELLER"},
+      {"description": "Chemical logistics/warehousing", "category": "DISQUALIFIED_NOT_PRODUCT_SELLER"},
+      {"description": "Chemical testing lab", "category": "DISQUALIFIED_NOT_PRODUCT_SELLER"}
+    ]
+  },
+
+  "llm": {
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 2500,
+    "temperature": 0
+  }
+}

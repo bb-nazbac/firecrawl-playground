@@ -1,0 +1,75 @@
+{
+  "spec_name": "dental_clinic_analysis",
+  "description": "Analysis specification for identifying and analyzing dental clinics in Spain",
+
+  "categories": [
+    {
+      "id": "dental_clinic",
+      "label": "Dental Clinic",
+      "description": "Business is a dental clinic or dental practice providing dental care services"
+    },
+    {
+      "id": "not_dental_clinic",
+      "label": "Not a Dental Clinic",
+      "description": "Business is healthcare-related but not a dental clinic (e.g., hospital, medical clinic, pharmacy, dental supplier)"
+    },
+    {
+      "id": "unrelated",
+      "label": "Unrelated Business",
+      "description": "Business is completely unrelated to dental care or healthcare"
+    }
+  ],
+
+  "extraction_fields": {
+    "business_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official name of the dental clinic or business"
+    },
+    "website": {
+      "type": "string",
+      "required": false,
+      "description": "Official website URL"
+    },
+    "phone": {
+      "type": "string",
+      "required": false,
+      "description": "Primary contact phone number"
+    },
+    "address": {
+      "type": "string",
+      "required": false,
+      "description": "Full street address or clinic location"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "is_dental_clinic",
+      "question": "Is this a dental clinic or dental practice that provides dental care services to patients? Answer: Yes, No, or Unknown",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "is_part_of_group",
+      "question": "Is this dental clinic part of a larger group or chain of dental clinics? Look for evidence of multiple locations, franchise relationships, or corporate ownership. Answer: Yes, No, or Unknown",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "group_clinic_count",
+      "question": "If this dental clinic is part of a group, how many dental clinics does the group have? Provide a specific number if stated, a range if approximate (e.g., '10-15', '50+'), or 'no evidence' if not part of a group or information is not available.",
+      "answer_type": "string",
+      "reasoning_required": true,
+      "evidence_required": true
+    }
+  ],
+
+  "llm": {
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 1500,
+    "temperature": 0
+  }
+}

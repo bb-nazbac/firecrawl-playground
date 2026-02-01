@@ -1,0 +1,14 @@
+client: poka_labs
+
+search:
+  query: "Specialty chemical/materials manufacturers or distributors in {city}"
+  gl: "us"
+  cities:
+    - New York City, United States
+    - Los Angeles, United States
+    - Chicago, United States
+    - Houston, United States
+    - Phoenix, United States
+  results_per_city: 50
+
+analysis_spec: specialty_chemical_analysis

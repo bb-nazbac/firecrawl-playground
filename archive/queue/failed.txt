@@ -1,0 +1,7 @@
+openinfo/supplier-directory|L1|Thu 23 Oct 2025 20:35:52 BST
+openinfo/example|https://example.com|Thu 23 Oct 2025 21:26:53 BST
+openinfo/httpbin|https://httpbin.org|Thu 23 Oct 2025 21:29:10 BST
+openinfo/hotfrog|https://www.hotfrog.co.uk/|Fri 24 Oct 2025 11:18:36 BST
+openinfo/scottishwholesale|https://www.scottishwholesale.co.uk/|Fri 24 Oct 2025 11:21:36 BST
+openinfo/thewholesaler|https://www.thewholesaler.co.uk/suppliers/foods/|Fri 24 Oct 2025 11:24:09 BST
+openinfo/bfff|https://bfff.co.uk/members|Fri 24 Oct 2025 12:14:23 BST

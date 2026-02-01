@@ -1,0 +1,171 @@
+{
+  "spec_name": "datadasher_financial_advisor_v2",
+  "description": "Optimized qualification of Financial Advisory or Wealth Management businesses with waterfall pre-filter",
+  "version": "2.0",
+
+  "client": {
+    "who_we_target": "Financial advisory firms and wealth management companies in the United States"
+  },
+
+  "waterfall_filter": {
+    "enabled": true,
+    "description": "Quick pre-qualification to filter out obvious non-matches before expensive iteration",
+    "questions": [
+      {
+        "field": "is_directory_or_listing",
+        "prompt": "Is this a directory, listing, comparison, review, or lead-generation site? Examples: Yelp, SmartAsset, WiserAdvisor, financial advisor directories, 'find an advisor' platforms. These aggregate/list advisors but are NOT advisory firms themselves.",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "is_bank_or_insurance_primary",
+        "prompt": "Is this company PRIMARILY a bank, credit union, or insurance company? Answer YES even if they have wealth management or advisory divisions - we want companies whose PRIMARY business is financial advisory, not banks that happen to offer it.",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      }
+    ],
+    "disqualify_rules": [
+      {
+        "if_field": "is_directory_or_listing",
+        "equals": "YES",
+        "then_disqualify": true,
+        "reason": "DIRECTORY_OR_LISTING",
+        "log_message": "Directory/listing/comparison site - not an advisory firm"
+      },
+      {
+        "if_field": "is_bank_or_insurance_primary",
+        "equals": "YES",
+        "then_disqualify": true,
+        "reason": "BANK_OR_INSURANCE",
+        "log_message": "Primarily a bank or insurance company"
+      }
+    ],
+    "output_schema": {
+      "is_directory_or_listing": "YES/NO/UNKNOWN",
+      "is_bank_or_insurance_primary": "YES/NO/UNKNOWN",
+      "confidence_directory": "HIGH/MEDIUM/LOW",
+      "confidence_bank_insurance": "HIGH/MEDIUM/LOW",
+      "evidence": "one sentence of evidence"
+    },
+    "closing_instruction": "Be decisive. If it's clearly a directory site or a bank/insurance company, say YES. Only say UNKNOWN if truly ambiguous."
+  },
+
+  "categories": [
+    {
+      "name": "QUALIFIED",
+      "description": "Company is a Financial Advisory or Wealth Management business as its PRIMARY function"
+    },
+    {
+      "name": "DISQUALIFIED_DIRECTORY",
+      "description": "Directory, listing, comparison, or lead-gen site"
+    },
+    {
+      "name": "DISQUALIFIED_BANK",
+      "description": "Primarily a bank or credit union"
+    },
+    {
+      "name": "DISQUALIFIED_INSURANCE",
+      "description": "Primarily an insurance company"
+    },
+    {
+      "name": "DISQUALIFIED_OTHER",
+      "description": "Not a financial advisory business (media, government, education, other)"
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Cannot determine from available data"
+    }
+  ],
+
+  "critical_questions": ["is_financial_advisory_or_wealth_management"],
+
+  "extraction_fields": {
+    "company_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official company name"
+    },
+    "website": {
+      "type": "url",
+      "required": false,
+      "description": "Primary website URL"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "is_financial_advisory_or_wealth_management",
+      "question": "Is this company's PRIMARY business Financial Advisory or Wealth Management?",
+      "answer_type": "string",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true,
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "Answer YES only if the company's PRIMARY business is one of these:\n- Financial Advisory: Provides personalized financial advice, financial planning, investment advice to individuals or businesses\n- Wealth Management: Manages client portfolios, provides comprehensive wealth services, investment management\n- Registered Investment Advisor (RIA)\n- Independent financial planning firm\n\nAnswer NO (not UNKNOWN) if the company is:\n- A bank or credit union (even with wealth management divisions) - should have been caught by waterfall\n- An insurance company (even if they sell financial products) - should have been caught by waterfall\n- A directory or listing site - should have been caught by waterfall\n- A mortgage lender or broker\n- A tax preparation service only\n- An accounting/CPA firm (unless financial advisory is explicitly their primary service)\n- A news, media, or educational site\n- A government agency\n- A job board or careers site\n- A generic business services company\n\nIMPORTANT: If you're unsure, lean toward NO rather than UNKNOWN. UNKNOWN should only be used when the website is truly ambiguous or has insufficient content.\n\nLook for signals like: 'financial advisor', 'wealth management', 'investment advisor', 'financial planner', 'RIA', 'fiduciary', 'portfolio management', 'retirement planning services', 'fee-only advisor'."
+    },
+    {
+      "field": "broker_dealer_affiliations",
+      "question": "What broker-dealer(s) is this company affiliated with? List all broker-dealer affiliations found.",
+      "answer_type": "array",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "Look for broker-dealer affiliations typically disclosed in:\n- Footer disclosures\n- 'Important Disclosures' sections\n- 'About' pages\n- Legal/compliance pages\n\nCommon broker-dealers include:\n- LPL Financial\n- Raymond James Financial Services\n- Cetera Advisor Networks\n- Commonwealth Financial Network\n- Ameriprise Financial Services\n- Northwestern Mutual Investment Services\n- Edward Jones\n- Wells Fargo Advisors\n- Morgan Stanley\n- Merrill Lynch\n- Charles Schwab\n- Fidelity Brokerage Services\n- TD Ameritrade\n- Pershing\n- RBC Wealth Management\n\nAlso look for phrases like:\n- 'Securities offered through [NAME]'\n- 'Member FINRA/SIPC'\n- 'Registered representative of [NAME]'\n- 'Investment advisory services offered through [NAME]'\n\nReturn an empty array [] if no broker-dealer affiliation is found or mentioned."
+    },
+    {
+      "field": "disqualification_type",
+      "question": "If not a financial advisory firm, what type of company is this?",
+      "answer_type": "string",
+      "answer_options": ["BANK", "INSURANCE", "DIRECTORY", "MEDIA", "GOVERNMENT", "EDUCATION", "ACCOUNTING", "OTHER", "NOT_APPLICABLE"],
+      "reasoning_required": false,
+      "evidence_required": false,
+      "guidance": "Only answer if is_financial_advisory_or_wealth_management = NO. Use NOT_APPLICABLE if it IS a financial advisory firm."
+    }
+  ],
+
+  "classification_logic": {
+    "description": "Classify based on whether company is a financial advisory or wealth management business",
+    "apply_in_order": [
+      {
+        "if": "is_financial_advisory_or_wealth_management = YES",
+        "then": "QUALIFIED",
+        "reason": "Company is a financial advisory or wealth management business"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = NO AND disqualification_type = BANK",
+        "then": "DISQUALIFIED_BANK",
+        "reason": "Primarily a bank or credit union"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = NO AND disqualification_type = INSURANCE",
+        "then": "DISQUALIFIED_INSURANCE",
+        "reason": "Primarily an insurance company"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = NO AND disqualification_type = DIRECTORY",
+        "then": "DISQUALIFIED_DIRECTORY",
+        "reason": "Directory or listing site"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = NO",
+        "then": "DISQUALIFIED_OTHER",
+        "reason": "Not a financial advisory or wealth management business"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = UNKNOWN",
+        "then": "INSUFFICIENT_INFO",
+        "reason": "Could not determine if company is a financial advisory or wealth management business"
+      }
+    ]
+  },
+
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 1,
+    "min_confidence": "medium",
+    "prompt_addition": "Before answering, assess if the provided content contains enough information to determine if this is a financial advisory or wealth management business. If the site is clearly a bank, insurance company, directory, or other non-advisory business, answer NO with high confidence - do not use UNKNOWN."
+  },
+
+  "llm": {
+    "model": "gpt-4.1-mini",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}

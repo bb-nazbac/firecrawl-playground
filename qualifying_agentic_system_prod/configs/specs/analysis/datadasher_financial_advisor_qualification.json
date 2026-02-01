@@ -1,0 +1,104 @@
+{
+  "spec_name": "datadasher_financial_advisor_qualification",
+  "description": "Qualify companies as Financial Advisory or Wealth Management businesses and identify broker-dealer affiliations",
+  "version": "1.0",
+
+  "client": {
+    "who_we_target": "Financial advisory firms and wealth management companies in the United States"
+  },
+
+  "categories": [
+    {
+      "name": "QUALIFIED",
+      "description": "Company is a Financial Advisory or Wealth Management business"
+    },
+    {
+      "name": "NOT_QUALIFIED",
+      "description": "Company is NOT a Financial Advisory or Wealth Management business"
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Cannot determine from available data"
+    }
+  ],
+
+  "critical_questions": ["is_financial_advisory_or_wealth_management", "is_registered_investment_advisor"],
+
+  "extraction_fields": {
+    "company_name": {
+      "type": "string",
+      "required": true,
+      "description": "Official company name"
+    },
+    "website": {
+      "type": "url",
+      "required": false,
+      "description": "Primary website URL"
+    }
+  },
+
+  "questions": [
+    {
+      "field": "is_financial_advisory_or_wealth_management",
+      "question": "Is this company specifically a FINANCIAL ADVISORY or WEALTH MANAGEMENT business?",
+      "answer_type": "string",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true,
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "Answer YES only if the company's PRIMARY business is one of these:\n- Financial Advisory: Provides personalized financial advice, financial planning, investment advice to individuals or businesses\n- Wealth Management: Manages client portfolios, provides comprehensive wealth services, investment management\n\nAnswer NO if the company is:\n- A bank (even if they have wealth management divisions)\n- An insurance company (even if they sell financial products)\n- A mortgage lender or broker\n- A tax preparation service only\n- An accounting firm (unless they explicitly offer financial advisory as a primary service)\n- A directory or listing site (like Yelp, SmartAsset, etc.)\n- A news or media site\n- A generic business services company\n\nLook for signals like: 'financial advisor', 'wealth management', 'investment advisor', 'financial planner', 'RIA' (Registered Investment Advisor), 'fiduciary', 'portfolio management', 'retirement planning services'."
+    },
+    {
+      "field": "is_registered_investment_advisor",
+      "question": "Is this company a REGISTERED INVESTMENT ADVISOR (RIA)?",
+      "answer_type": "string",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true,
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "Answer YES if there is clear evidence the company is a Registered Investment Advisor (RIA). Look for:\n- Explicit statements like 'Registered Investment Advisor' or 'RIA'\n- SEC registration references (e.g., 'SEC-registered investment adviser')\n- State registration references (e.g., 'registered with [State] Securities Division')\n- Form ADV references (RIAs must file Form ADV)\n- CRD number references\n- Fiduciary duty statements (RIAs have fiduciary duty)\n- 'Investment Adviser' or 'Investment Advisory' in official capacity\n\nAnswer NO if:\n- Company is only a broker-dealer (not an RIA)\n- Company is a bank or insurance company without separate RIA registration\n- No evidence of RIA registration found\n\nAnswer UNKNOWN if insufficient information to determine RIA status."
+    },
+    {
+      "field": "broker_dealer_affiliations",
+      "question": "What broker-dealer(s) is this company affiliated with? List all broker-dealer affiliations found.",
+      "answer_type": "array",
+      "reasoning_required": true,
+      "evidence_required": true,
+      "guidance": "Look for broker-dealer affiliations typically disclosed in:\n- Footer disclosures\n- 'Important Disclosures' sections\n- 'About' pages\n- Legal/compliance pages\n\nCommon broker-dealers include:\n- LPL Financial\n- Raymond James Financial Services\n- Cetera Advisor Networks\n- Commonwealth Financial Network\n- Ameriprise Financial Services\n- Northwestern Mutual Investment Services\n- Edward Jones\n- Wells Fargo Advisors\n- Morgan Stanley\n- Merrill Lynch\n- Charles Schwab\n- Fidelity Brokerage Services\n- TD Ameritrade\n- Pershing\n- RBC Wealth Management\n\nAlso look for phrases like:\n- 'Securities offered through [NAME]'\n- 'Member FINRA/SIPC'\n- 'Registered representative of [NAME]'\n- 'Investment advisory services offered through [NAME]'\n\nReturn an empty array [] if no broker-dealer affiliation is found or mentioned."
+    }
+  ],
+
+  "classification_logic": {
+    "description": "Classify based on whether company is a financial advisory or wealth management business",
+    "apply_in_order": [
+      {
+        "if": "is_financial_advisory_or_wealth_management = NO",
+        "then": "NOT_QUALIFIED",
+        "reason": "Not a financial advisory or wealth management business"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = UNKNOWN",
+        "then": "INSUFFICIENT_INFO",
+        "reason": "Could not determine if company is a financial advisory or wealth management business"
+      },
+      {
+        "if": "is_financial_advisory_or_wealth_management = YES",
+        "then": "QUALIFIED",
+        "reason": "Company is a financial advisory or wealth management business"
+      }
+    ]
+  },
+
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 1,
+    "min_confidence": "medium",
+    "prompt_addition": "Before answering, assess if the provided content contains enough information to determine if this is a financial advisory or wealth management business. Look for about pages, services pages, and footer disclosures for broker-dealer information."
+  },
+
+  "llm": {
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}
