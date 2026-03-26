@@ -1,0 +1,144 @@
+{
+  "spec_name": "ai_mna_deal_extraction",
+  "description": "Extract AI M&A transaction details from news articles and deal pages",
+  "version": "1.0",
+
+  "waterfall_filter": {
+    "questions": [
+      {
+        "field": "is_about_mna_transaction",
+        "question": "Is this page about a specific M&A transaction (acquisition, merger, or buyout) involving a company in the AI, machine learning, or data science space? Look for deal announcements, press releases, or news coverage of a specific transaction. General industry reports or listicles do NOT count.",
+        "answer_type": "boolean"
+      }
+    ],
+    "disqualify_rules": [
+      {
+        "condition": "is_about_mna_transaction = NO",
+        "classification": "NOT_MNA",
+        "reason": "Page is not about a specific M&A transaction"
+      }
+    ]
+  },
+
+  "categories": [
+    {
+      "name": "DEAL_FOUND",
+      "description": "Valid AI M&A transaction with extractable details"
+    },
+    {
+      "name": "NOT_MNA",
+      "description": "Page is not about an M&A transaction or not AI-related"
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Appears to be M&A but cannot extract meaningful deal details"
+    }
+  ],
+
+  "questions": [
+    {
+      "field": "is_about_mna_transaction",
+      "question": "Is this page about a specific M&A transaction (acquisition, merger, or buyout) between named companies?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "reasoning_max_length": 200
+    },
+    {
+      "field": "involves_ai_company",
+      "question": "Does the target company or acquirer primarily operate in AI, machine learning, data science, or a closely related field?",
+      "answer_type": "boolean",
+      "reasoning_required": true,
+      "reasoning_max_length": 200
+    },
+    {
+      "field": "deal_type",
+      "question": "What type of deal is this?",
+      "answer_type": "string",
+      "answer_options": ["full_acquisition", "majority_stake", "minority_investment", "merger", "asset_purchase", "acqui_hire", "unknown"],
+      "reasoning_required": false
+    },
+    {
+      "field": "acquirer_name",
+      "question": "What is the name of the acquiring company (the buyer)? Return the company name only.",
+      "answer_type": "string",
+      "reasoning_required": false
+    },
+    {
+      "field": "target_company_name",
+      "question": "What is the name of the company being acquired (the target)? Return the company name only.",
+      "answer_type": "string",
+      "reasoning_required": false
+    },
+    {
+      "field": "deal_value",
+      "question": "What is the transaction value? Include currency symbol (e.g., '$1.2B', '$500M'). Return 'undisclosed' if not mentioned.",
+      "answer_type": "string",
+      "reasoning_required": false
+    },
+    {
+      "field": "deal_date",
+      "question": "When was this deal announced or closed? Use YYYY-MM-DD format if possible, otherwise best approximation (e.g., '2025-01', 'Q1 2025').",
+      "answer_type": "string",
+      "reasoning_required": false
+    },
+    {
+      "field": "deal_status",
+      "question": "What is the current status of the deal?",
+      "answer_type": "string",
+      "answer_options": ["announced", "closed", "pending_regulatory", "rumored", "terminated", "unknown"],
+      "reasoning_required": false
+    },
+    {
+      "field": "ai_vertical",
+      "question": "What is the primary AI sub-field of the target company? (e.g., NLP, computer vision, robotics, MLOps, generative AI, autonomous vehicles, healthcare AI, cybersecurity AI, AI wearables, conversational AI, etc.)",
+      "answer_type": "string",
+      "reasoning_required": false
+    },
+    {
+      "field": "deal_rationale",
+      "question": "What is the stated rationale for the acquisition? (e.g., 'talent acquisition', 'technology integration', 'market expansion'). Return 'not stated' if not mentioned.",
+      "answer_type": "string",
+      "reasoning_required": false
+    }
+  ],
+
+  "classification_logic": {
+    "apply_in_order": [
+      {
+        "order": 1,
+        "condition": "is_about_mna_transaction = NO",
+        "result": "NOT_MNA",
+        "disqualification_reason": "Not about an M&A transaction"
+      },
+      {
+        "order": 2,
+        "condition": "involves_ai_company = NO",
+        "result": "NOT_MNA",
+        "disqualification_reason": "Not an AI/ML company"
+      },
+      {
+        "order": 3,
+        "condition": "is_about_mna_transaction = YES AND involves_ai_company = YES",
+        "result": "DEAL_FOUND"
+      },
+      {
+        "order": 99,
+        "condition": "default",
+        "result": "INSUFFICIENT_INFO"
+      }
+    ]
+  },
+
+  "sufficiency_check": {
+    "enabled": true,
+    "min_questions_answered": 1,
+    "min_confidence": "medium",
+    "prompt_addition": "This is a news article or deal page. Extract all M&A deal details you can find. If the page doesn't describe a specific acquisition/merger transaction, indicate that clearly."
+  },
+
+  "llm": {
+    "model": "gpt-5-mini",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}

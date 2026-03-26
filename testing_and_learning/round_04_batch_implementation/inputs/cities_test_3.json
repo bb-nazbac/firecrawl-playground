@@ -1,7 +1,0 @@
-{
-  "cities": [
-    {"id": 1, "name": "Madrid", "slug": "madrid"},
-    {"id": 2, "name": "Barcelona", "slug": "barcelona"},
-    {"id": 3, "name": "Sevilla", "slug": "sevilla"}
-  ]
-}

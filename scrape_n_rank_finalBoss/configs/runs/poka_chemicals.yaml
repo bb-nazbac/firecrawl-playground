@@ -1,0 +1,28 @@
+# Poka Labs - Chemical Company Qualification
+# Qualify domains from CSV for chemical/technical product sellers
+# Use Case C: Domain qualification (CSV → qualify → dedupe)
+
+client: poka_labs
+name: chemical_qualification_v2
+
+input:
+  file: inputs/poka_labs_domains.csv
+  column: domain
+
+stages:
+
+  qualify:
+    spec: poka_labs_chemical_qualification_v2
+    model: claude-haiku-4-5-20251001
+    scrape_mode: domain
+    firecrawl_concurrency: 45
+    llm_concurrency: 30
+    max_pages: 11
+    waterfall: true
+
+  dedupe:
+    key_field: domain
+    mode: dedupe
+
+max_cost_usd: 100.0
+# test_mode: 10    # Uncomment to test with first 10 domains

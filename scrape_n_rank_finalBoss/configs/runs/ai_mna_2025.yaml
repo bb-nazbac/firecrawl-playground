@@ -1,0 +1,54 @@
+# AI M&A Deal Research - 2025
+# Discover and extract AI company acquisitions from web search
+# Use Case A: Topic research (search → qualify → dedupe → fact-check)
+
+client: M&A_Res
+name: ai_mna_2025
+
+stages:
+
+  search:
+    mode: query_list
+    queries:
+      - "AI acquisition January 2024"
+      - "AI acquisition February 2024"
+      - "AI acquisition March 2024"
+      - "AI acquisition April 2024"
+      - "AI acquisition May 2024"
+      - "AI acquisition June 2024"
+      - "AI acquisition July 2024"
+      - "AI acquisition August 2024"
+      - "AI acquisition September 2024"
+      - "AI acquisition October 2024"
+      - "AI acquisition January 2025"
+      - "AI acquisition February 2025"
+      - "AI acquisition March 2025"
+      - "AI acquisition April 2025"
+      - "AI acquisition May 2025"
+      - "AI acquisition June 2025"
+      - "AI acquisition July 2025"
+      - "AI acquisition August 2025"
+      - "AI acquisition September 2025"
+      - "AI acquisition October 2025"
+    results_per_query: 100
+    gl: us
+    concurrency: 30
+
+  qualify:
+    spec: ai_mna_deal_extraction
+    model: gpt-5-mini
+    scrape_mode: url
+    firecrawl_concurrency: 100
+    llm_concurrency: 100
+    max_pages: 1
+    waterfall: true
+
+  dedupe:
+    key_field: target_company_name
+    mode: group
+
+  fact_check:
+    model: sonar
+    concurrency: 3
+
+# test_mode: 3    # Uncomment to test with first 3 queries only

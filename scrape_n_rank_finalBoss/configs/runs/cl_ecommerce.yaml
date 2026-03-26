@@ -1,0 +1,36 @@
+# CL - eCommerce Company Qualification
+# Qualify eCommerce companies from Apollo export
+# Pattern C: CSV → qualify → dedupe
+#
+# Criteria:
+#   1. Must sell consumer products (B2C)
+#   2. Must have own online eCommerce store OR sell on Amazon
+#   3. Classify into consumer product categories
+#
+# Waterfall filter:
+#   Q1: Do they sell consumer products? (NO → disqualified)
+#   Q2: Do they have an online store or Amazon? (NO → disqualified)
+
+client: CL
+name: ecommerce_qualification
+
+input:
+  file: inputs/cl_ecommerce_accounts.csv
+  column: Website
+
+stages:
+  qualify:
+    spec: cl_ecommerce_qualification
+    model: gpt-4.1-mini
+    scrape_mode: domain
+    firecrawl_concurrency: 45
+    llm_concurrency: 30
+    max_pages: 5
+    waterfall: true
+
+  dedupe:
+    key_field: domain
+    mode: dedupe
+
+max_cost_usd: 50.0
+# test_mode: 5    # Uncomment to test with first 5 domains

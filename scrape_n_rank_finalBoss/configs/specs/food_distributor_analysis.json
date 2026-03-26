@@ -1,0 +1,67 @@
+{
+  "spec_name": "food_distributor_analysis",
+  "description": "Analysis specification for food and beverage distributors and manufacturers in the UK",
+
+  "categories": [
+    {
+      "id": "food_beverage_distributor",
+      "label": "Food and/or Beverage Distributor",
+      "description": "Company primarily distributes food/beverage products from suppliers to end customers"
+    },
+    {
+      "id": "food_beverage_manufacturer",
+      "label": "Food and/or Beverage Manufacturer",
+      "description": "Company primarily manufactures food/beverage products"
+    },
+    {
+      "id": "food_beverage_both",
+      "label": "Food and/or Beverage Distributor and Manufacturer",
+      "description": "Company both manufactures AND distributes food/beverage products"
+    },
+    {
+      "id": "not_food_beverage",
+      "label": "Not Food or Beverage Related",
+      "description": "Company is not involved in food or beverage distribution or manufacturing"
+    }
+  ],
+
+  "extraction_fields": {},
+
+  "questions": [
+    {
+      "field": "primary_business_model",
+      "question": "Determine their primary business model in the food industry. Look at their homepage, services, and about sections to understand if they move physical food products from suppliers to end customers (restaurants, retailers, institutions). Check for keywords like 'distribute', 'wholesale', 'delivery', 'supply chain', 'foodservice', 'broadline', 'fleet', 'next-day delivery', 'route delivery'. Identify whether they primarily manufacture products themselves or distribute products made by others. Classify their main business activity.",
+      "answer_type": "string",
+      "answer_options": [
+        "Food and or Beverage Distributor",
+        "Food and or Beverage manufacturer",
+        "Food and or beverage distributor and manufacturer",
+        "Not a food or beverage distributor or manufacturer"
+      ],
+      "reasoning_required": true,
+      "evidence_required": true
+    },
+    {
+      "field": "annual_revenue",
+      "question": "Is there any indication of this business's annual revenue or order quantity? Return a rough range. We're looking at ANNUAL revenue here in GBP (£).",
+      "answer_type": "string",
+      "answer_options": [
+        "£1m-5m",
+        "£5m-10m",
+        "£10m-20m",
+        "£20m-30m",
+        "£30m-50m",
+        "£50m+",
+        "Insufficient evidence"
+      ],
+      "reasoning_required": true,
+      "evidence_required": true
+    }
+  ],
+
+  "llm": {
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 1500,
+    "temperature": 0
+  }
+}

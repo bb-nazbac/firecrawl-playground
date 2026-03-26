@@ -1,0 +1,85 @@
+# ============================================================
+# scrape_n_rank_finalBoss — Run Config Template
+# ============================================================
+#
+# Copy this file and customize for your use case.
+# Only include the stages you need — omit a stage to skip it.
+#
+# Three common patterns:
+#   A) Topic research:  search (query_list) → qualify → dedupe → fact_check
+#   B) Geo discovery:   search (geo)        → qualify → dedupe
+#   C) Domain qualify:   input (CSV)        → qualify → dedupe
+#
+# ============================================================
+
+client: your_client_name          # Client/project identifier
+name: your_run_name               # Run name (used in output directory)
+
+# --- INPUT (optional) ---
+# Use this to start from a CSV file instead of search.
+# If input is set, the search stage is skipped.
+#
+# input:
+#   file: inputs/domains.csv      # Path relative to project root
+#   column: domain                # Column containing domains
+
+# --- STAGES ---
+# Define the stages to run. Stages execute in order:
+#   search → qualify → dedupe → fact_check
+# Omit a stage block to skip it entirely.
+
+stages:
+
+  # ── SEARCH ──────────────────────────────────────────
+  # Discovers domains/URLs via Serper.dev web search.
+  search:
+    mode: query_list              # "query_list" or "geo"
+
+    # For query_list mode:
+    queries:
+      - "your search query 1"
+      - "your search query 2"
+    results_per_query: 100
+
+    # For geo mode (uncomment and use instead of queries):
+    # query_template: "your query in {city}"
+    # cities:
+    #   - New York City, United States
+    #   - Los Angeles, United States
+    # results_per_city: 100
+
+    gl: us                        # Google region code
+    concurrency: 30               # Parallel search requests
+
+  # ── QUALIFY ─────────────────────────────────────────
+  # Scrapes pages and runs LLM qualification per spec.
+  qualify:
+    spec: your_spec_name          # Refs configs/specs/{name}.json
+    model: claude-haiku-4-5-20251001   # LLM model for qualification
+    scrape_mode: domain           # "url" (exact URLs) or "domain" (homepage-first)
+    firecrawl_concurrency: 45     # Parallel Firecrawl scrapes
+    llm_concurrency: 30           # Parallel LLM requests
+    max_pages: 11                 # Max pages per domain (1 = homepage only)
+    waterfall: true               # Enable cheap pre-filter from spec
+
+  # ── DEDUPE ──────────────────────────────────────────
+  # Deduplicates results by a key field.
+  dedupe:
+    key_field: domain             # Column to group by
+    mode: dedupe                  # "dedupe" (keep best) or "group" (keep all, sorted)
+
+  # ── FACT CHECK (optional) ───────────────────────────
+  # Verifies extracted data via Perplexity Sonar API.
+  # fact_check:
+  #   model: sonar                # "sonar" (cheap) or "sonar-pro" (better)
+  #   concurrency: 3              # Perplexity rate limit
+  #   fields_to_verify:           # Which fields to verify
+  #     - acquirer_name
+  #     - target_company_name
+
+# --- GLOBAL OPTIONS ---
+
+# streaming: true                 # Enable concurrent search+qualify (for large runs)
+# test_mode: 3                    # Process only first N items (for testing)
+# max_cost_usd: 50.0              # Budget cap (stops at 100%)
+# dry_run: false                  # Validate config only, no API calls

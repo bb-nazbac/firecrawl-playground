@@ -1,0 +1,371 @@
+{
+  "spec_name": "cl_ecommerce_qualification",
+  "version": "1.0",
+
+  "client": {
+    "who_we_target": "eCommerce businesses that sell consumer products and have either their own online store (any platform — Shopify, WooCommerce, custom, etc.) or sell on Amazon. We want to classify what consumer product categories they operate in."
+  },
+
+  "description": "Qualify eCommerce companies by (1) confirming they sell consumer products, (2) confirming they have an online store or Amazon presence, and (3) classifying their product categories. Iterative qualification with per-question confidence tracking.",
+
+  "waterfall_filter": {
+    "enabled": true,
+    "description": "Four-stage cheap pre-qualification. (1) Do they sell consumer products? (2) Do they have an online store or Amazon? (3) Are their products harmful to health (alcohol, tobacco)? (4) Is this an age-restricted adult-only business?",
+    "questions": [
+      {
+        "field": "sells_consumer_products",
+        "prompt": "Does this company sell CONSUMER PRODUCTS (physical goods sold to end consumers / B2C)? This includes any physical product — food, beauty, apparel, electronics, home goods, supplements, pet products, etc. Say NO if they are purely B2B, services-only, software-only, consulting, or if they only sell to other businesses and never to consumers.",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "has_online_store_or_amazon",
+        "prompt": "Does this company have an online eCommerce store where consumers can browse and purchase/order products directly on their website? OR do they sell products on Amazon? The online store does NOT need to be Shopify — it can be any platform (WooCommerce, BigCommerce, Magento, custom-built, etc.) as long as customers can order products through their website. Say YES if they have ANY online purchasing capability on their own site OR if they sell on Amazon. Say NO only if they have no online store and no Amazon presence (e.g., brick-and-mortar only, wholesale-only with no DTC channel).",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "sells_harmful_substances",
+        "prompt": "Does this company primarily sell products that are harmful to health? Specifically: alcoholic beverages (beer, wine, spirits, liquor), tobacco products (cigarettes, cigars, rolling tobacco), vaping/e-cigarette products, or nicotine products. Say YES if the company's primary business is selling any of these categories. Say NO if these are not part of their core product offering. Note: a general retailer that happens to stock some alcohol alongside many other product categories should be answered NO — we are looking for businesses whose primary focus is alcohol, tobacco, or vaping.",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      },
+      {
+        "field": "is_intimate_adult_business",
+        "prompt": "Based on the company's branding and product descriptions, does this business primarily sell intimate or sexual wellness merchandise? We are classifying the business model only. Say YES if the company's core product catalog consists of intimate apparel marketed for sexual purposes, sexual wellness devices, or related merchandise of a sexual nature. Say NO for all other businesses — including energy drinks, supplements, age-gated foods/beverages, general lingerie/underwear brands, swimwear, or any product that merely requires an age check at purchase. The question is specifically about intimate/sexual merchandise as the primary business, not about age restrictions in general.",
+        "answer_options": ["YES", "NO", "UNKNOWN"]
+      }
+    ],
+    "disqualify_rules": [
+      {
+        "if_field": "sells_consumer_products",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "NOT_CONSUMER_PRODUCTS",
+        "log_message": "Does not sell consumer products"
+      },
+      {
+        "if_field": "has_online_store_or_amazon",
+        "equals": "NO",
+        "then_disqualify": true,
+        "reason": "NO_ONLINE_STORE",
+        "log_message": "No online eCommerce store and no Amazon presence"
+      },
+      {
+        "if_field": "sells_harmful_substances",
+        "equals": "YES",
+        "then_disqualify": true,
+        "reason": "HARMFUL_PRODUCTS",
+        "log_message": "Primarily sells alcohol, tobacco, or vaping products"
+      },
+      {
+        "if_field": "is_intimate_adult_business",
+        "equals": "YES",
+        "then_disqualify": true,
+        "reason": "INTIMATE_ADULT",
+        "log_message": "Intimate/sexual wellness merchandise"
+      }
+    ],
+    "output_schema": {
+      "sells_consumer_products": "YES/NO/UNKNOWN",
+      "has_online_store_or_amazon": "YES/NO/UNKNOWN",
+      "sells_harmful_substances": "YES/NO/UNKNOWN",
+      "is_intimate_adult_business": "YES/NO/UNKNOWN",
+      "confidence_consumer": "HIGH/MEDIUM/LOW",
+      "confidence_store": "HIGH/MEDIUM/LOW",
+      "confidence_harmful": "HIGH/MEDIUM/LOW",
+      "confidence_intimate": "HIGH/MEDIUM/LOW",
+      "evidence": "one sentence of evidence"
+    },
+    "closing_instruction": "Be decisive. If the website is clearly B2B-only, say NO to sells_consumer_products. If there is no way to purchase online and no Amazon store, say NO to has_online_store_or_amazon. If the business primarily sells alcohol, tobacco, or vaping products, say YES to sells_harmful_substances. If the business primarily sells intimate/sexual wellness merchandise, say YES to is_intimate_adult_business. Do NOT flag energy drinks, supplements, or general lingerie/underwear brands."
+  },
+
+  "categories": [
+    {
+      "name": "HEALTH_BEAUTY",
+      "description": "Skincare, cosmetics, haircare, personal care, grooming, beauty tools, oral care."
+    },
+    {
+      "name": "FOOD_BEVERAGE",
+      "description": "Packaged food, snacks, beverages, coffee/tea, condiments, specialty foods, meal kits."
+    },
+    {
+      "name": "SUPPLEMENTS_WELLNESS",
+      "description": "Vitamins, supplements, protein powders, health/wellness products, nutraceuticals, functional foods."
+    },
+    {
+      "name": "FASHION_APPAREL",
+      "description": "Clothing, footwear, accessories, jewelry, bags, watches, eyewear."
+    },
+    {
+      "name": "HOME_KITCHEN",
+      "description": "Home decor, kitchenware, furniture, bedding, bath, cleaning products, candles, organization."
+    },
+    {
+      "name": "SPORTS_OUTDOORS",
+      "description": "Fitness equipment, activewear, outdoor gear, camping, cycling, water sports, athletic accessories."
+    },
+    {
+      "name": "ELECTRONICS_ACCESSORIES",
+      "description": "Consumer electronics, phone accessories, audio, smart home devices, chargers, cables, tech gadgets."
+    },
+    {
+      "name": "BABY_KIDS",
+      "description": "Baby products, children's clothing, toys, nursery, kids' accessories, maternity."
+    },
+    {
+      "name": "PET",
+      "description": "Pet food, pet treats, pet accessories, grooming, pet health, pet toys."
+    },
+    {
+      "name": "OTHER_CONSUMER",
+      "description": "Consumer products that don't fit the above: automotive accessories, garden, crafts, stationery, gifts, etc."
+    },
+    {
+      "name": "DISQUALIFIED",
+      "description": "Does not meet criteria: not consumer products, no online store / no Amazon, B2B-only, alcohol/tobacco/vaping, or intimate adult merchandise."
+    },
+    {
+      "name": "INSUFFICIENT_INFO",
+      "description": "Not enough information to classify (website down, unclear product offering, etc.)."
+    }
+  ],
+
+  "evidence_policy": {
+    "require_evidence_for_non_unknown": true,
+    "evidence_item_format": "Each evidence item must include the page URL and a short excerpt supporting the answer.",
+    "min_evidence_items_recommended": 2
+  },
+
+  "output_schema": {
+    "company_name": {
+      "type": "string",
+      "required": true
+    },
+
+    "final_classification": {
+      "type": "string",
+      "required": true,
+      "allowed_values": ["HEALTH_BEAUTY", "FOOD_BEVERAGE", "SUPPLEMENTS_WELLNESS", "FASHION_APPAREL", "HOME_KITCHEN", "SPORTS_OUTDOORS", "ELECTRONICS_ACCESSORIES", "BABY_KIDS", "PET", "OTHER_CONSUMER", "DISQUALIFIED", "INSUFFICIENT_INFO"],
+      "description": "Primary consumer product category after applying all qualification rules."
+    },
+
+    "disqualification_reason": {
+      "type": "string",
+      "required": false,
+      "allowed_values": ["NOT_CONSUMER_PRODUCTS", "NO_ONLINE_STORE", "HARMFUL_PRODUCTS", "INTIMATE_ADULT", null],
+      "description": "If DISQUALIFIED, specify why. Null if qualified or insufficient info."
+    },
+
+    "answers": {
+      "type": "object",
+      "required": true,
+      "fields": {
+        "sells_consumer_products": {
+          "type": "string",
+          "allowed_values": ["YES", "NO", "UNKNOWN"]
+        },
+        "has_own_ecommerce_store": {
+          "type": "string",
+          "allowed_values": ["YES", "NO", "UNKNOWN"],
+          "description": "Does the company have an online store on their own website (any platform)?"
+        },
+        "sells_on_amazon": {
+          "type": "string",
+          "allowed_values": ["YES", "NO", "UNKNOWN"]
+        },
+        "ecommerce_platform": {
+          "type": "string",
+          "allowed_values": ["SHOPIFY", "WOOCOMMERCE", "BIGCOMMERCE", "MAGENTO", "SQUARESPACE", "CUSTOM", "OTHER", "UNKNOWN", "NONE"],
+          "description": "Detected eCommerce platform powering their online store, if any."
+        },
+        "other_marketplaces": {
+          "type": "array",
+          "description": "Other marketplaces they sell on besides Amazon (e.g., Walmart, eBay, Etsy, Target)."
+        },
+        "primary_category": {
+          "type": "string",
+          "allowed_values": ["HEALTH_BEAUTY", "FOOD_BEVERAGE", "SUPPLEMENTS_WELLNESS", "FASHION_APPAREL", "HOME_KITCHEN", "SPORTS_OUTDOORS", "ELECTRONICS_ACCESSORIES", "BABY_KIDS", "PET", "OTHER_CONSUMER", "NOT_APPLICABLE"]
+        },
+        "secondary_categories": {
+          "type": "array",
+          "allowed_values": ["HEALTH_BEAUTY", "FOOD_BEVERAGE", "SUPPLEMENTS_WELLNESS", "FASHION_APPAREL", "HOME_KITCHEN", "SPORTS_OUTDOORS", "ELECTRONICS_ACCESSORIES", "BABY_KIDS", "PET", "OTHER_CONSUMER"],
+          "description": "Additional categories if the company sells across multiple verticals."
+        }
+      }
+    },
+
+    "confidence": {
+      "type": "object",
+      "required": true,
+      "description": "Per-question confidence levels. Used for iterative refinement.",
+      "fields": {
+        "sells_consumer_products": {
+          "type": "string",
+          "allowed_values": ["HIGH", "MEDIUM", "LOW", "INSUFFICIENT"]
+        },
+        "has_own_ecommerce_store": {
+          "type": "string",
+          "allowed_values": ["HIGH", "MEDIUM", "LOW", "INSUFFICIENT"]
+        },
+        "sells_on_amazon": {
+          "type": "string",
+          "allowed_values": ["HIGH", "MEDIUM", "LOW", "INSUFFICIENT"]
+        },
+        "ecommerce_platform": {
+          "type": "string",
+          "allowed_values": ["HIGH", "MEDIUM", "LOW", "INSUFFICIENT"]
+        },
+        "primary_category": {
+          "type": "string",
+          "allowed_values": ["HIGH", "MEDIUM", "LOW", "INSUFFICIENT"]
+        }
+      }
+    },
+
+    "products_found": {
+      "type": "array",
+      "required": true,
+      "min_items": 0,
+      "max_items": 8,
+      "description": "3-8 specific products or product lines found on the site."
+    },
+
+    "needs_more_pages": {
+      "type": "boolean",
+      "required": true,
+      "description": "True if any critical question has LOW or INSUFFICIENT confidence and more pages might help."
+    },
+
+    "suggested_page_types": {
+      "type": "array",
+      "required": false,
+      "max_items": 5,
+      "description": "If needs_more_pages=true, what page types would help? e.g., ['products', 'shop', 'collections', 'about']"
+    },
+
+    "pages_reviewed": {
+      "type": "array",
+      "required": true,
+      "min_items": 1,
+      "max_items": 12
+    },
+
+    "evidence": {
+      "type": "array",
+      "required": true,
+      "min_items": 0,
+      "max_items": 10,
+      "items": {
+        "type": "object",
+        "required_fields": ["url", "excerpt"],
+        "fields": {
+          "url": { "type": "string" },
+          "excerpt": { "type": "string", "max_length": 240 },
+          "supports_question": { "type": "string", "required": false, "description": "Which question this evidence supports" }
+        }
+      }
+    }
+  },
+
+  "classification_logic": {
+    "description": "Apply these rules in order to determine final_classification.",
+    "apply_in_order": [
+      { "if": "answers.sells_consumer_products = NO", "then": "DISQUALIFIED", "reason": "NOT_CONSUMER_PRODUCTS" },
+      { "if": "answers.has_own_ecommerce_store = NO AND answers.sells_on_amazon = NO", "then": "DISQUALIFIED", "reason": "NO_ONLINE_STORE" },
+      { "if": "answers.sells_harmful_substances = YES", "then": "DISQUALIFIED", "reason": "HARMFUL_PRODUCTS" },
+      { "if": "answers.is_intimate_adult_business = YES", "then": "DISQUALIFIED", "reason": "INTIMATE_ADULT" },
+      { "if": "answers.sells_consumer_products = YES AND (answers.has_own_ecommerce_store = YES OR answers.sells_on_amazon = YES)", "then": "Use answers.primary_category as final_classification" },
+      { "if": "too many UNKNOWN/INSUFFICIENT", "then": "INSUFFICIENT_INFO", "reason": null }
+    ]
+  },
+
+  "iteration_logic": {
+    "description": "Rules for deciding when to request more pages",
+    "stop_conditions": [
+      "All confidence values are HIGH",
+      "All confidence values are at least MEDIUM and final_classification is not INSUFFICIENT_INFO",
+      "max_iterations reached",
+      "max_pages reached"
+    ],
+    "continue_conditions": [
+      "Any critical question (sells_consumer_products, has_own_ecommerce_store, primary_category) has LOW or INSUFFICIENT confidence",
+      "needs_more_pages = true"
+    ],
+    "critical_questions": ["sells_consumer_products", "has_own_ecommerce_store", "primary_category"],
+    "page_type_hints": {
+      "sells_consumer_products": ["products", "shop", "collections", "store", "catalog"],
+      "has_own_ecommerce_store": ["shop", "store", "cart", "products", "collections"],
+      "sells_on_amazon": ["about", "where-to-buy", "stockists", "retailers", "amazon"],
+      "ecommerce_platform": ["shop", "store", "products"],
+      "primary_category": ["products", "shop", "collections", "categories", "catalog"]
+    }
+  },
+
+  "questions": [
+    {
+      "field": "sells_consumer_products",
+      "question": "Does this company sell consumer products (physical goods to end consumers / B2C)? Look for product listings, shop pages, pricing, add-to-cart buttons, consumer-oriented language. Say NO if purely B2B, services, software, or consulting.",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true,
+      "evidence_required": true
+    },
+    {
+      "field": "has_own_ecommerce_store",
+      "question": "Does this company have an online eCommerce store on their own website where consumers can browse and purchase products? This can be ANY platform — Shopify, WooCommerce, BigCommerce, Magento, Squarespace, custom-built, etc. Look for: cart functionality, checkout pages, 'Shop' or 'Store' navigation, product pages with buy/add-to-cart buttons, pricing displayed.",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": true,
+      "evidence_required": true
+    },
+    {
+      "field": "sells_on_amazon",
+      "question": "Does this company sell products on Amazon? Look for: 'Available on Amazon' badges, Amazon links, 'Buy on Amazon' buttons, mentions of Amazon storefront, or any reference to selling on Amazon marketplace.",
+      "answer_type": "enum",
+      "answer_options": ["YES", "NO", "UNKNOWN"],
+      "is_critical": false,
+      "evidence_required": true
+    },
+    {
+      "field": "ecommerce_platform",
+      "question": "What eCommerce platform powers their online store? Check page source hints: Shopify (myshopify.com, cdn.shopify.com), WooCommerce (woocommerce classes, /wp-content/), BigCommerce, Magento (magento in source), Squarespace, or CUSTOM if it appears bespoke. Say NONE if no online store exists.",
+      "answer_type": "enum",
+      "answer_options": ["SHOPIFY", "WOOCOMMERCE", "BIGCOMMERCE", "MAGENTO", "SQUARESPACE", "CUSTOM", "OTHER", "UNKNOWN", "NONE"],
+      "is_critical": false,
+      "evidence_required": false
+    },
+    {
+      "field": "other_marketplaces",
+      "question": "Besides Amazon, does the company sell on other online marketplaces? List any found (e.g., Walmart, eBay, Etsy, Target, Nordstrom). Empty array if none mentioned.",
+      "answer_type": "array",
+      "is_critical": false,
+      "evidence_required": false
+    },
+    {
+      "field": "products_found",
+      "question": "List 3-8 specific products or product lines found on the site. Include product names/descriptions.",
+      "answer_type": "array",
+      "is_critical": false,
+      "evidence_required": true
+    },
+    {
+      "field": "primary_category",
+      "question": "Which consumer product category best describes what this company primarily sells? Choose based on the majority of their product catalog. If they sell across many categories, pick the dominant one.",
+      "answer_type": "enum",
+      "answer_options": ["HEALTH_BEAUTY", "FOOD_BEVERAGE", "SUPPLEMENTS_WELLNESS", "FASHION_APPAREL", "HOME_KITCHEN", "SPORTS_OUTDOORS", "ELECTRONICS_ACCESSORIES", "BABY_KIDS", "PET", "OTHER_CONSUMER", "NOT_APPLICABLE"],
+      "is_critical": true,
+      "evidence_required": true
+    },
+    {
+      "field": "secondary_categories",
+      "question": "Does this company also sell products in other consumer categories? List any secondary categories that represent a meaningful portion of their catalog. Empty array if they are focused on a single category.",
+      "answer_type": "array",
+      "is_critical": false,
+      "evidence_required": false
+    }
+  ],
+
+  "llm_runtime": {
+    "model": "RUNTIME_CONFIGURED",
+    "max_tokens": 2000,
+    "temperature": 0
+  }
+}

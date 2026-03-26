@@ -1,0 +1,24 @@
+# CL - eCommerce Test Run (25 domains)
+# Tests 4-gate waterfall filter + full qualification
+# Waterfall: consumer products → online store/Amazon → harmful substances → intimate adult
+
+client: CL
+name: ecommerce_test25
+
+input:
+  file: inputs/cl_ecommerce_test25.csv
+  column: Website
+
+stages:
+  qualify:
+    spec: cl_ecommerce_qualification
+    model: gpt-4.1-mini
+    scrape_mode: domain
+    firecrawl_concurrency: 15
+    llm_concurrency: 15
+    max_pages: 5
+    waterfall: true
+
+  dedupe:
+    key_field: domain
+    mode: dedupe

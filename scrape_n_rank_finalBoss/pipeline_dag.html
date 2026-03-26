@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline DAG — Company &amp; People Qualification</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:14px}
+  body{
+    background:#f7f7fa;
+    color:#2a2a30;
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  /* subtle grid */
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+
+  /* ── Layout ─────────────────────────────── */
+  #app{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem 4rem}
+  h1{
+    font-size:1.15rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:#2a2a30;margin-bottom:.25rem;
+  }
+  .subtitle{color:#888;font-size:.75rem;margin-bottom:.3rem;letter-spacing:.04em}
+  .fig-caption{color:#777;font-size:.7rem;font-style:italic;margin-bottom:2rem;max-width:600px;text-align:center;line-height:1.5}
+
+  /* ── SVG Canvas ─────────────────────────── */
+  #dag-svg{width:100%;max-width:900px}
+
+  /* ── Nodes ──────────────────────────────── */
+  .node-group{cursor:pointer}
+  .node-group:hover .node-bg{fill:#eeeef3}
+  .node-bg{rx:6;ry:6;stroke-width:1.5;fill:#ffffff;transition:fill .15s}
+  .node-title{fill:#2a2a30;font-family:inherit;font-size:11.5px;font-weight:600;pointer-events:none}
+  .node-sub{fill:#888;font-family:inherit;font-size:9px;pointer-events:none}
+  .node-tag{font-family:'SF Mono','Fira Code',monospace;font-size:8px;font-weight:700;pointer-events:none;letter-spacing:.05em}
+
+  /* node type colours — slightly deeper for light bg */
+  .stroke-search{stroke:#4a8cc0}
+  .stroke-filter{stroke:#4a9da6}
+  .stroke-scrape{stroke:#3e96a3}
+  .stroke-llm{stroke:#8060aa}
+  .stroke-iterate{stroke:#6d5c9a}
+  .stroke-dedupe{stroke:#6a7a88}
+  .stroke-output{stroke:#559960}
+  .stroke-handoff{stroke:#b86a30}
+  .stroke-people{stroke:#b57a30}
+  .stroke-merge{stroke:#a68040}
+  .stroke-input{stroke:#556570}
+  .fill-search{fill:#4a8cc0}
+  .fill-filter{fill:#4a9da6}
+  .fill-scrape{fill:#3e96a3}
+  .fill-llm{fill:#8060aa}
+  .fill-iterate{fill:#6d5c9a}
+  .fill-dedupe{fill:#6a7a88}
+  .fill-output{fill:#559960}
+  .fill-handoff{fill:#b86a30}
+  .fill-people{fill:#b57a30}
+  .fill-merge{fill:#a68040}
+  .fill-input{fill:#556570}
+
+  /* ── Edges ──────────────────────────────── */
+  .edge{fill:none;stroke-width:1.5}
+  .edge-company{stroke:rgba(74,140,192,.35)}
+  .edge-people{stroke:rgba(181,122,48,.35)}
+  .edge-handoff{stroke-width:2;stroke:rgba(184,106,48,.5);stroke-dasharray:8 5}
+  .edge-branch{stroke-dasharray:4 4;opacity:.5}
+
+  /* ── Section labels ─────────────────────── */
+  .section-label{font-family:inherit;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;fill:#aaa}
+  .section-line{stroke:#dddde2;stroke-width:1}
+
+  /* ── Detail Panel ───────────────────────── */
+  #detail-panel{
+    position:fixed;right:-420px;top:0;width:400px;height:100vh;
+    background:#ffffff;border-left:1px solid #e0e0e5;
+    transition:right .3s cubic-bezier(.4,0,.2,1);
+    z-index:100;overflow-y:auto;padding:2rem 1.5rem;
+    box-shadow:-4px 0 20px rgba(0,0,0,.06);
+  }
+  #detail-panel.open{right:0}
+  #detail-panel .close-btn{
+    position:absolute;top:1rem;right:1rem;background:none;border:none;
+    color:#bbb;font-size:1.2rem;cursor:pointer;line-height:1;
+  }
+  #detail-panel .close-btn:hover{color:#333}
+  #detail-panel h2{font-size:1rem;font-weight:600;margin-bottom:.15rem;color:#2a2a30}
+  #detail-panel .panel-phase{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.15rem}
+  #detail-panel .panel-sub{color:#888;font-size:.72rem;margin-bottom:1rem}
+  .detail-section{margin-bottom:1.1rem}
+  .detail-section h3{font-size:.72rem;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;border-bottom:1px solid #eee;padding-bottom:.25rem;font-weight:600}
+  .detail-section p,.detail-section li{font-size:.82rem;color:#555;line-height:1.6}
+  .detail-section ul{padding-left:1.1rem}
+  .detail-section code{font-family:'SF Mono','Fira Code',monospace;background:#f0f2f5;padding:.1rem .35rem;border-radius:3px;font-size:.75rem;color:#3a70a0}
+  .tag{display:inline-block;padding:.12rem .45rem;border-radius:3px;font-size:.65rem;font-weight:600;margin-right:.25rem;margin-bottom:.25rem;letter-spacing:.02em}
+  .tag-api{background:#e8eef5;color:#3a6a9a}
+  .tag-llm{background:#f0e8f5;color:#6a48a0}
+  .tag-data{background:#e8f2ea;color:#3a7a45}
+  .tag-tool{background:#f0ece8;color:#7a6050}
+
+  /* ── Legend ──────────────────────────────── */
+  #legend{
+    position:fixed;bottom:1rem;left:1rem;background:#ffffff;border:1px solid #e0e0e5;
+    border-radius:6px;padding:.7rem .9rem;z-index:50;font-size:.65rem;color:#666;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+  }
+  #legend h4{font-size:.6rem;color:#999;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.4rem;font-weight:600}
+  .legend-row{display:flex;align-items:center;gap:.45rem;margin-bottom:.25rem}
+  .legend-swatch{width:12px;height:12px;border-radius:3px;border:1.5px solid}
+
+  /* ── Backdrop ───────────────────────────── */
+  #backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.15);z-index:90}
+  #backdrop.open{display:block}
+
+  /* ── Responsive ─────────────────────────── */
+  @media(max-width:600px){
+    #dag-svg{max-width:100%}
+    #detail-panel{width:100%;right:-100%}
+    #legend{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Pipeline DAG</h1>
+  <div class="subtitle">Company Qualification &rarr; People Qualification</div>
+  <div class="fig-caption">Figure 1. Directed acyclic graph of the two-phase qualification pipeline. Phase 1 (top) qualifies companies via search, scraping, and LLM analysis. Phase 2 (bottom) ranks contacts within qualified companies.</div>
+  <svg id="dag-svg" viewBox="0 0 820 1480" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow-company" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L8,5 L0,9" fill="none" stroke="rgba(74,140,192,.55)" stroke-width="1.5"/></marker>
+      <marker id="arrow-people" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L8,5 L0,9" fill="none" stroke="rgba(181,122,48,.55)" stroke-width="1.5"/></marker>
+      <marker id="arrow-handoff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1 L8,5 L0,9" fill="none" stroke="rgba(184,106,48,.65)" stroke-width="1.5"/></marker>
+    </defs>
+  </svg>
+</div>
+
+<div id="detail-panel">
+  <button class="close-btn" onclick="closePanel()">&times;</button>
+  <div id="panel-content"></div>
+</div>
+<div id="backdrop" onclick="closePanel()"></div>
+
+<div id="legend">
+  <h4>Stage Types</h4>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#4a8cc0;background:#fff"></div> Search</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#4a9da6;background:#fff"></div> Filter / Scrape</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#8060aa;background:#fff"></div> LLM Analysis</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#6d5c9a;background:#fff"></div> Iteration</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#6a7a88;background:#fff"></div> Deduplication</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#559960;background:#fff"></div> Output</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#b57a30;background:#fff"></div> People Stage</div>
+  <div class="legend-row"><div class="legend-swatch" style="border-color:#556570;background:#fff"></div> Data Input</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  NODE & EDGE DATA
+// ═══════════════════════════════════════════════════════════
+
+const NODES = [
+  // ── Phase 1: Company Qualification ─────
+  {
+    id:'csv_input', x:195, y:55, w:190, h:42,
+    title:'CSV Input', sub:'Pre-built domain list (optional)',
+    type:'input', pipeline:'company', tag:'IN',
+    detail:{
+      desc:'Optional pre-built list of domains/companies. Bypasses search when a curated list is already available.',
+      inputs:['CSV with columns: domain, company_name'],
+      outputs:['List of domains to qualify'],
+      tags:[{label:'CSV',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'search', x:430, y:55, w:190, h:42,
+    title:'Search', sub:'Serper.dev API, 30 concurrent',
+    type:'search', pipeline:'company', tag:'S',
+    detail:{
+      desc:'Runs Google searches via Serper.dev API to discover companies matching the query and geography filters. Up to 30 concurrent requests with automatic dedup of domains.',
+      inputs:['Query string','Geography / locale','Results per query'],
+      outputs:['Unique domains + raw URLs'],
+      apis:['Serper.dev (Google Search)'],
+      concurrency:'30 workers',
+      tags:[{label:'Serper API',cls:'tag-api'},{label:'30 workers',cls:'tag-tool'}]
+    }
+  },
+  {
+    id:'waterfall', x:290, y:150, w:230, h:48,
+    title:'Waterfall Filter', sub:'Cheap LLM pre-screen, ~100 tok/domain',
+    type:'filter', pipeline:'company', tag:'F',
+    detail:{
+      desc:'Quick pre-qualification using a cheap LLM call per domain. Checks domain name, TLD, and basic heuristics against deal criteria. ~100 tokens per domain. Eliminates obvious mismatches before expensive scraping.',
+      inputs:['Domain list','Deal criteria (from config)'],
+      outputs:['PASS: proceed to scrape','DISQUALIFIED: skip'],
+      apis:['OpenAI gpt-4.1-nano or gpt-4.1-mini'],
+      cost:'~100 tokens/domain (~$0.00001 each)',
+      tags:[{label:'LLM',cls:'tag-llm'},{label:'~100 tok',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'homepage_qualify', x:290, y:260, w:230, h:48,
+    title:'Homepage Qualify', sub:'Firecrawl scrape + full LLM analysis',
+    type:'scrape', pipeline:'company', tag:'HQ',
+    detail:{
+      desc:'Scrapes the homepage via Firecrawl, then runs a full LLM analysis to score the company against all deal criteria. Returns a structured qualification with confidence levels.',
+      inputs:['Domain (passed filter)','Deal criteria YAML'],
+      outputs:['SUFFICIENT: skip to dedupe','INSUFFICIENT: need more pages'],
+      apis:['Firecrawl /scrape','OpenAI gpt-4.1-mini'],
+      tags:[{label:'Firecrawl',cls:'tag-api'},{label:'LLM Qualify',cls:'tag-llm'}]
+    }
+  },
+  {
+    id:'map_site', x:530, y:365, w:180, h:42,
+    title:'Map Site', sub:'Firecrawl /map endpoint',
+    type:'scrape', pipeline:'company', tag:'M',
+    detail:{
+      desc:'When homepage alone is insufficient, calls Firecrawl /map to discover all pages on the site. Returns a structured sitemap used by the iterate stage to pick the best next page.',
+      inputs:['Domain with insufficient homepage data'],
+      outputs:['List of all discoverable URLs on the domain'],
+      apis:['Firecrawl /map'],
+      tags:[{label:'Firecrawl /map',cls:'tag-api'}]
+    }
+  },
+  {
+    id:'iterate', x:520, y:460, w:200, h:48,
+    title:'Iterate', sub:'Loop 1-10, LLM selects next page',
+    type:'iterate', pipeline:'company', tag:'IT',
+    detail:{
+      desc:'Iterative deep-dive: each round the LLM examines current qualification gaps, picks the most promising page from the sitemap, scrapes it, and re-runs qualification. Stops when sufficient or after 10 rounds.',
+      inputs:['Sitemap URLs','Current partial qualification','Deal criteria'],
+      outputs:['Updated qualification (may reach SUFFICIENT)','Pages visited log'],
+      apis:['Firecrawl /scrape','OpenAI gpt-4.1-mini'],
+      concurrency:'Sequential per company, parallel across companies',
+      tags:[{label:'Loop 1-10',cls:'tag-tool'},{label:'LLM Select',cls:'tag-llm'},{label:'Firecrawl',cls:'tag-api'}]
+    }
+  },
+  {
+    id:'dedupe', x:330, y:585, w:180, h:42,
+    title:'Deduplicate', sub:'Group by key, keep best score',
+    type:'dedupe', pipeline:'company', tag:'DD',
+    detail:{
+      desc:'Groups qualified companies by a configurable key (usually root domain), then keeps the best-scored entry per group. Handles subsidiaries, redirects, and www/non-www duplicates.',
+      inputs:['All qualified companies (from homepage + iterate paths)'],
+      outputs:['Deduplicated qualified companies'],
+      tags:[{label:'Dedup Key',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'factcheck', x:310, y:680, w:220, h:48,
+    title:'Fact-Check', sub:'Perplexity Sonar, web-verified (optional)',
+    type:'llm', pipeline:'company', tag:'FC',
+    detail:{
+      desc:'Optional web-grounded verification using Perplexity Sonar. Cross-references key claims (revenue, headcount, funding, tech stack) against live web data. Adds confidence_boost or confidence_penalty to each criterion.',
+      inputs:['Qualified company record','Key claims to verify'],
+      outputs:['Fact-checked record with confidence adjustments'],
+      apis:['Perplexity Sonar API'],
+      cost:'~500-1000 tokens/company',
+      tags:[{label:'Perplexity',cls:'tag-api'},{label:'Optional',cls:'tag-tool'}]
+    }
+  },
+  {
+    id:'companies_csv', x:290, y:780, w:250, h:42,
+    title:'qualified_companies.csv', sub:'Phase 1 output',
+    type:'output', pipeline:'company', tag:'OUT',
+    detail:{
+      desc:'Final CSV of all qualified and optionally fact-checked companies. Contains all criteria scores, confidence levels, sources, and qualification status.',
+      inputs:['Fact-checked (or deduplicated) companies'],
+      outputs:['CSV file on disk','Feeds into Phase 2 People Qualification'],
+      tags:[{label:'CSV',cls:'tag-data'},{label:'Output',cls:'tag-data'}]
+    }
+  },
+
+  // ── Phase 2: People Qualification ──────
+  {
+    id:'contacts_csv', x:290, y:950, w:250, h:42,
+    title:'contacts_by_company.csv', sub:'Input from CRM / enrichment',
+    type:'input', pipeline:'people', tag:'IN',
+    detail:{
+      desc:'Contact list enriched from CRM or data provider (e.g., Apollo, ZoomInfo). One row per person, grouped by company domain. Includes name, title, LinkedIn, email.',
+      inputs:['qualified_companies.csv (domains)','CRM / enrichment API'],
+      outputs:['Contacts with company association'],
+      tags:[{label:'CSV',cls:'tag-data'},{label:'CRM',cls:'tag-api'}]
+    }
+  },
+  {
+    id:'l1_classify', x:280, y:1045, w:270, h:52,
+    title:'L1: Cross-Company Classify', sub:'gpt-5-mini, batch 20, 400 workers',
+    type:'people', pipeline:'people', tag:'L1',
+    detail:{
+      desc:'Level 1 classification across all contacts regardless of company. Uses gpt-5-mini to bucket each contact into relevance tiers 1-20 (1 = perfect fit, 20 = marginal, 99 = disqualified). Processes in batches of 20 contacts with 400 concurrent workers.',
+      inputs:['All contacts','Deal criteria / ICP definition'],
+      outputs:['Each contact receives a bucket number (1-20 or 99)'],
+      apis:['OpenAI gpt-5-mini'],
+      concurrency:'400 workers, batch size 20',
+      cost:'~200 tokens/contact',
+      tags:[{label:'gpt-5-mini',cls:'tag-llm'},{label:'400 workers',cls:'tag-tool'},{label:'Buckets 1-20',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'l2_score', x:280, y:1155, w:270, h:52,
+    title:'L2: Intra-Company Score', sub:'Swiss system tournament, top 50% per round',
+    type:'people', pipeline:'people', tag:'L2',
+    detail:{
+      desc:'Level 2 scoring within each company using a Swiss System Tournament. Contacts from the same company compete head-to-head. Each round, winners face winners and losers face losers. Top 50% survive each round. Number of rounds = log2(n/50). Batch size 50 comparisons per LLM call.',
+      inputs:['L1-classified contacts (bucket <= 20)','Company context'],
+      outputs:['Intra-company score (0-100) per contact'],
+      apis:['OpenAI gpt-5-mini'],
+      concurrency:'Batch 50 comparisons',
+      cost:'~300 tokens/comparison',
+      tags:[{label:'Swiss System',cls:'tag-llm'},{label:'Batch 50',cls:'tag-tool'},{label:'log2(n/50) rounds',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'l3_merge', x:280, y:1265, w:270, h:52,
+    title:'L3: Merge & Rank', sub:'priority = (20 - bucket) * 100 + score * 10',
+    type:'merge', pipeline:'people', tag:'L3',
+    detail:{
+      desc:'Combines L1 cross-company bucket with L2 intra-company score into a single priority number. Formula: priority = (20 - bucket) * 100 + score * 10. Higher priority = better fit. Produces final ranked list.',
+      inputs:['L1 bucket per contact','L2 intra-company score per contact'],
+      outputs:['Final priority score per contact','Sorted ranked list'],
+      tags:[{label:'Deterministic',cls:'tag-tool'},{label:'Priority Score',cls:'tag-data'}]
+    }
+  },
+  {
+    id:'ranked_csv', x:300, y:1375, w:230, h:42,
+    title:'ranked_contacts.csv', sub:'Final ranked output',
+    type:'output', pipeline:'people', tag:'OUT',
+    detail:{
+      desc:'Final output CSV with all contacts ranked by composite priority score. Ready for outreach sequencing: top-ranked contacts should be contacted first.',
+      inputs:['L3-ranked contacts'],
+      outputs:['CSV file on disk','Ready for outreach / sequencing'],
+      tags:[{label:'CSV',cls:'tag-data'},{label:'Final Output',cls:'tag-data'}]
+    }
+  }
+];
+
+const EDGES = [
+  // Phase 1
+  {from:'csv_input',  to:'waterfall',       type:'company'},
+  {from:'search',     to:'waterfall',       type:'company'},
+  {from:'waterfall',  to:'homepage_qualify', type:'company', label:'PASS'},
+  {from:'homepage_qualify', to:'dedupe',     type:'company', label:'SUFFICIENT', branch:'left'},
+  {from:'homepage_qualify', to:'map_site',   type:'company', label:'INSUFFICIENT'},
+  {from:'map_site',   to:'iterate',         type:'company'},
+  {from:'iterate',    to:'dedupe',          type:'company'},
+  {from:'dedupe',     to:'factcheck',       type:'company'},
+  {from:'factcheck',  to:'companies_csv',   type:'company'},
+  // Handoff
+  {from:'companies_csv', to:'contacts_csv', type:'handoff'},
+  // Phase 2
+  {from:'contacts_csv', to:'l1_classify',   type:'people'},
+  {from:'l1_classify',  to:'l2_score',      type:'people'},
+  {from:'l2_score',     to:'l3_merge',      type:'people'},
+  {from:'l3_merge',     to:'ranked_csv',    type:'people'},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════════
+const svg = document.getElementById('dag-svg');
+const NS = 'http://www.w3.org/2000/svg';
+
+function el(tag, attrs={}, parent=svg){
+  const e = document.createElementNS(NS, tag);
+  for(const[k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  parent.appendChild(e);
+  return e;
+}
+
+// ── Section labels & dividers ────────────
+el('text',{x:410,y:30,class:'section-label','text-anchor':'middle'}).textContent =
+  'PHASE 1: COMPANY QUALIFICATION  (scrape_n_rank_finalBoss)';
+
+el('line',{x1:80,y1:865,x2:740,y2:865,class:'section-line'});
+el('line',{x1:80,y1:868,x2:740,y2:868,stroke:'#dddde2','stroke-width':'1',opacity:'.4'});
+
+el('text',{x:410,y:920,class:'section-label','text-anchor':'middle'}).textContent =
+  'PHASE 2: PEOPLE QUALIFICATION  (people_qualifier_agentic_prod)';
+
+// ── Helpers ──────────────────────────────
+function nodeCenter(id){
+  const n = NODES.find(n=>n.id===id);
+  return {x:n.x+n.w/2, y:n.y+n.h/2, top:n.y, bottom:n.y+n.h, left:n.x, right:n.x+n.w, w:n.w, h:n.h};
+}
+
+function buildPath(from, to, branch){
+  const a = nodeCenter(from);
+  const b = nodeCenter(to);
+
+  if(branch === 'left'){
+    const sx = a.left;
+    const sy = a.y;
+    const ex = b.left + 15;
+    const ey = b.top;
+    return `M${sx},${sy} C${sx - 55},${sy} ${ex - 55},${ey} ${ex},${ey}`;
+  }
+
+  const sx = a.x, sy = a.bottom;
+  const ex = b.x, ey = b.top;
+  const dy = ey - sy;
+  return `M${sx},${sy} C${sx},${sy + dy*.4} ${ex},${ey - dy*.4} ${ex},${ey}`;
+}
+
+// ── Draw edges ───────────────────────────
+EDGES.forEach(edge => {
+  const d = buildPath(edge.from, edge.to, edge.branch);
+  const cls = edge.type === 'handoff' ? 'edge edge-handoff'
+            : edge.type === 'people'  ? 'edge edge-people'
+            : 'edge edge-company' + (edge.branch ? ' edge-branch' : '');
+  const marker = edge.type === 'handoff' ? 'url(#arrow-handoff)'
+               : edge.type === 'people'  ? 'url(#arrow-people)' : 'url(#arrow-company)';
+
+  el('path', {d, class:cls, 'marker-end':marker});
+
+  // Edge labels
+  if(edge.label){
+    const a = nodeCenter(edge.from);
+    const b = nodeCenter(edge.to);
+    let lx, ly;
+    if(edge.branch === 'left'){
+      lx = a.left - 65;
+      ly = a.y + 3;
+    } else {
+      lx = (a.x + b.x)/2 + 8;
+      ly = (a.bottom + b.top)/2 + 1;
+    }
+    el('text', {x:lx, y:ly, fill:'#999', 'font-size':'8.5', 'font-family':'inherit', 'font-weight':'600', 'letter-spacing':'.04em'}).textContent = edge.label;
+  }
+});
+
+// ── Dead-end: DISQUALIFIED ───────────────
+const wf = nodeCenter('waterfall');
+el('path', {
+  d:`M${wf.right},${wf.y} L${wf.right + 45},${wf.y}`,
+  class:'edge edge-company edge-branch',
+  'marker-end':'url(#arrow-company)'
+});
+el('text', {x:wf.right + 50, y:wf.y + 3, fill:'#c05050', 'font-size':'8.5', 'font-family':'inherit', 'font-weight':'600'}).textContent = 'DISQUALIFIED';
+
+// ── Handoff label ────────────────────────
+el('text', {x:410, y:882, fill:'#b06830', 'font-size':'9', 'font-weight':'600', 'font-family':'inherit', 'letter-spacing':'.12em', 'text-anchor':'middle'}).textContent = 'HANDOFF';
+el('text', {x:410, y:896, fill:'#bba898', 'font-size':'8', 'font-family':'inherit', 'text-anchor':'middle'}).textContent = 'qualified domains \u2192 contact enrichment';
+
+// ── Draw nodes ───────────────────────────
+NODES.forEach(node => {
+  const g = el('g', {class:'node-group', transform:`translate(${node.x},${node.y})`});
+  g.dataset.nodeId = node.id;
+
+  const strokeCls = 'stroke-' + node.type;
+  const fillCls = 'fill-' + node.type;
+
+  // Background
+  el('rect', {class:`node-bg ${strokeCls}`, width:node.w, height:node.h, x:0, y:0}, g);
+
+  // Type tag (small colored label on left)
+  const tagW = node.tag.length * 7 + 8;
+  el('rect', {x:6, y:(node.h - 14)/2, width:tagW, height:14, rx:2, ry:2, fill:'none', class:strokeCls, 'stroke-width':'1', opacity:'.6'}, g);
+  el('text', {x:6 + tagW/2, y:node.h/2 + 3, class:`node-tag ${fillCls}`, 'text-anchor':'middle', opacity:'.7'}, g).textContent = node.tag;
+
+  // Title
+  const textX = tagW + 14;
+  el('text', {x:textX, y: node.h > 48 ? node.h/2 - 4 : node.h/2 - 1, class:'node-title'}, g).textContent = node.title;
+
+  // Subtitle
+  el('text', {x:textX, y: node.h > 48 ? node.h/2 + 10 : node.h/2 + 11, class:'node-sub'}, g).textContent = node.sub;
+
+  g.addEventListener('click', () => openPanel(node));
+});
+
+// ═══════════════════════════════════════════════════════════
+//  DETAIL PANEL
+// ═══════════════════════════════════════════════════════════
+const panel = document.getElementById('detail-panel');
+const backdrop = document.getElementById('backdrop');
+const panelContent = document.getElementById('panel-content');
+
+function openPanel(node){
+  const d = node.detail;
+  const phase = node.pipeline === 'company' ? 'Phase 1: Company Qualification' : 'Phase 2: People Qualification';
+  const phaseColor = node.pipeline === 'company' ? '#4a8cc0' : '#b57a30';
+
+  let html = `<div class="panel-phase" style="color:${phaseColor}">${phase}</div>`;
+  html += `<h2>${node.title}</h2>`;
+  html += `<div class="panel-sub">${node.sub}</div>`;
+  html += `<div class="detail-section"><h3>Description</h3><p>${d.desc}</p></div>`;
+
+  if(d.tags && d.tags.length){
+    html += `<div class="detail-section"><h3>Classification</h3><div>`;
+    d.tags.forEach(t => html += `<span class="tag ${t.cls}">${t.label}</span>`);
+    html += `</div></div>`;
+  }
+  if(d.inputs){
+    html += `<div class="detail-section"><h3>Inputs</h3><ul>`;
+    d.inputs.forEach(i => html += `<li>${i}</li>`);
+    html += `</ul></div>`;
+  }
+  if(d.outputs){
+    html += `<div class="detail-section"><h3>Outputs</h3><ul>`;
+    d.outputs.forEach(o => html += `<li>${o}</li>`);
+    html += `</ul></div>`;
+  }
+  if(d.apis){
+    html += `<div class="detail-section"><h3>External APIs</h3><ul>`;
+    d.apis.forEach(a => html += `<li><code>${a}</code></li>`);
+    html += `</ul></div>`;
+  }
+  if(d.concurrency){
+    html += `<div class="detail-section"><h3>Concurrency</h3><p>${d.concurrency}</p></div>`;
+  }
+  if(d.cost){
+    html += `<div class="detail-section"><h3>Token Cost</h3><p>${d.cost}</p></div>`;
+  }
+
+  panelContent.innerHTML = html;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+
+function closePanel(){
+  panel.classList.remove('open');
+  backdrop.classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>

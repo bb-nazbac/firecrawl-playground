@@ -45,5 +45,13 @@ datadasher/
 
 # Large data files
 *.csv
-# But keep small config/template CSVs if needed:
-# !some_template.csv
+*.json
+# Keep config/spec JSONs and package files
+!**/configs/**/*.json
+!**/specs/**/*.json
+!package.json
+!package-lock.json
+
+# Large binary/data files
+*.xlsx
+*.xls
