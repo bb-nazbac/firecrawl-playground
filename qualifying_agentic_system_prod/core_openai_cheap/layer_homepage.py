@@ -895,7 +895,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='L1: Homepage qualification (OpenAI)')
     parser.add_argument('domain', help='Domain to analyze')
-    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/poka_labs_chemical_qualification_v2.json'),
+    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/TEMPLATE.json'),
                         help='Path to analysis spec')
     parser.add_argument('--model', default='gpt-5-mini', help='OpenAI model')
 

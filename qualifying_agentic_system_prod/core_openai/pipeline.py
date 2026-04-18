@@ -186,8 +186,8 @@ class PipelineResult:
 class PipelineConfig:
     """Configuration for pipeline run"""
     # Spec file
-    spec_path: str = str(ROOT_DIR / "configs/specs/analysis/poka_labs_chemical_qualification_v2.json")
-    client_name: str = "poka_labs"
+    spec_path: str = str(ROOT_DIR / "configs/specs/analysis/TEMPLATE.json")
+    client_name: str = "example_client"
     run_name: str = "run"  # Prefix for output folder, defaults to input CSV name
 
     # Model
@@ -707,9 +707,9 @@ def main():
     parser.add_argument('--openai-concurrency', type=int, default=150, help='OpenAI concurrent requests (default: 150)')
     parser.add_argument('--max-pages', type=int, default=11, help='Max pages per domain (default: 11)')
     parser.add_argument('--model', default='gpt-5-mini', help='OpenAI model (default: gpt-5-mini)')
-    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/poka_labs_chemical_qualification_v2.json'),
+    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/TEMPLATE.json'),
                         help='Path to analysis spec')
-    parser.add_argument('--client', default='poka_labs', help='Client name for output directory')
+    parser.add_argument('--client', default='example_client', help='Client name for output directory')
     parser.add_argument('--run-name', help='Run name prefix for output folder (default: input CSV filename)')
     parser.add_argument('--no-waterfall', action='store_true',
                         help='Disable waterfall filter (use for non-chemical specs like insurance)')
@@ -720,7 +720,7 @@ def main():
     if args.run_name:
         run_name = args.run_name
     elif Path(args.input).exists() and args.input.endswith('.csv'):
-        run_name = Path(args.input).stem  # e.g., "poka_labs_ground_truth_domains"
+        run_name = Path(args.input).stem  # e.g., "my_domains"
     else:
         run_name = "run"
 

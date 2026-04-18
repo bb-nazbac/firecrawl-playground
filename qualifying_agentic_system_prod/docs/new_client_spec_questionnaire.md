@@ -8,14 +8,14 @@ Use this questionnaire to gather all the information needed to create a qualific
 
 ### 1.1 Client Information
 - **Client name (internal)**: What should we call this client in our system?
-  - Example: "poka_labs", "layerup", "acme_corp"
+  - Example: "acme_corp", "globex_insurance", "initech_chemicals"
   - Used for: folder names, spec file naming, output organization
 
 ### 1.2 Product/Service Description
 - **What does the client sell?** (2-3 sentences)
   - What is the core product or service?
   - What problem does it solve?
-  - Example: "Poka Labs sells connected worker software for manufacturing facilities. Their platform digitizes SOPs, enables real-time collaboration, and tracks training compliance."
+  - Example: "Acme Corp sells connected worker software for manufacturing facilities. Their platform digitizes SOPs, enables real-time collaboration, and tracks training compliance."
 
 ### 1.3 Ideal Customer Profile (ICP)
 - **Who is the ideal customer?**

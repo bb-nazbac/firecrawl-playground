@@ -73,8 +73,8 @@ class PipelineResult:
 class PipelineConfig:
     """Configuration for pipeline run"""
     # Spec file
-    spec_path: str = str(ROOT_DIR / "configs/specs/analysis/poka_labs_chemical_qualification_v2.json")
-    client_name: str = "poka_labs"
+    spec_path: str = str(ROOT_DIR / "configs/specs/analysis/TEMPLATE.json")
+    client_name: str = "example_client"
 
     # Model
     claude_model: str = "claude-haiku-4-5-20251001"
@@ -527,9 +527,9 @@ def main():
     parser.add_argument('--claude-concurrency', type=int, default=30, help='Claude concurrent requests (default: 30)')
     parser.add_argument('--max-pages', type=int, default=11, help='Max pages per domain (default: 11)')
     parser.add_argument('--model', default='claude-haiku-4-5-20251001', help='Claude model (default: claude-haiku-4-5-20251001)')
-    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/poka_labs_chemical_qualification_v2.json'),
+    parser.add_argument('--spec', default=str(ROOT_DIR / 'configs/specs/analysis/TEMPLATE.json'),
                         help='Path to analysis spec')
-    parser.add_argument('--client', default='poka_labs', help='Client name for output directory')
+    parser.add_argument('--client', default='example_client', help='Client name for output directory')
 
     args = parser.parse_args()
 

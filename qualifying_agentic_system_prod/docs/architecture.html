@@ -740,8 +740,8 @@
                     </tr>
                     <tr>
                         <td><strong>Best For</strong></td>
-                        <td>CAT SAP qualification, initial screening</td>
-                        <td>Forge duty drawback, detailed company research</td>
+                        <td>Example SAP qualification, initial screening</td>
+                        <td>Example - duty drawback, detailed company research</td>
                     </tr>
                 </tbody>
             </table>
@@ -749,15 +749,15 @@
             <h3>Usage Examples</h3>
             <pre><code><span class="code-comment"># Normal Pipeline - High throughput screening</span>
 python -m <span class="code-function">core_openai.pipeline</span> input.csv \
-    --spec configs/specs/analysis/cat_sap_qualification.json \
+    --spec configs/specs/analysis/example_sap_qualification.json \
     --client cat \
     --run-name sap_btp_jan13
 
 <span class="code-comment"># Deep Pipeline - Detailed analysis</span>
 python -m <span class="code-function">core_openai_deep.pipeline</span> input.csv \
-    --spec configs/specs/analysis/forge_duty_drawback_qualification_v4.json \
-    --client forge \
-    --run-name forge_ny_production \
+    --spec configs/specs/analysis/example_duty_drawback_qualification.json \
+    --client example_client \
+    --run-name ny_production \
     --model gpt-5-mini \
     --min-pages <span class="code-number">5</span> \
     --max-pages <span class="code-number">15</span></code></pre>
@@ -971,8 +971,8 @@ python -m <span class="code-function">core_openai_deep.pipeline</span> input.csv
 
             <h3>Spec Locations</h3>
             <pre><code>configs/specs/analysis/
-├── cat_sap_qualification.json      <span class="code-comment"># CAT client - SAP manufacturing</span>
-├── forge_duty_drawback_qualification_v4.json  <span class="code-comment"># Forge - duty drawback</span>
+├── example_sap_qualification.json      <span class="code-comment"># Example - SAP manufacturing</span>
+├── example_duty_drawback_qualification.json  <span class="code-comment"># Example - duty drawback</span>
 └── [client]_[use_case].json        <span class="code-comment"># Pattern for new specs</span></code></pre>
 
             <h3>Key Benefits</h3>
@@ -1378,13 +1378,13 @@ export FIRECRAWL_API_KEY=<span class="code-string">"fc-..."</span></code></pre>
 ├── <span class="code-function">configs/</span>
 │   └── specs/
 │       └── analysis/
-│           ├── cat_sap_qualification.json
-│           └── forge_duty_drawback_qualification_v4.json
+│           ├── example_sap_qualification.json
+│           └── example_duty_drawback_qualification.json
 │
 ├── <span class="code-function">outputs/</span>                   <span class="code-comment"># Run outputs</span>
 │   ├── cat/                  <span class="code-comment"># Client-specific folders</span>
 │   │   └── run_name_timestamp/
-│   └── forge/
+│   └── example_client/
 │
 ├── <span class="code-function">inputs/</span>                    <span class="code-comment"># Input CSV files</span>
 │

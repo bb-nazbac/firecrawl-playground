@@ -1,0 +1,92 @@
+# ═══════════════════════════════════════════════════════════════
+# EXAMPLE: Insurance Claims Qualification Run
+# ═══════════════════════════════════════════════════════════════
+# This config demonstrates how to run the qualifying agentic system
+# against a list of insurance company domains to classify them
+# as potential fits for AI-powered claims automation.
+
+# WHO - Client identification
+client: "example_client"
+
+# WHAT - Input source
+input:
+  # Option 1: File path to domains
+  file: "inputs/insurance_domains.csv"
+
+  # Option 2: Inline list (for small tests)
+  # domains:
+  #   - "allstate.com"
+  #   - "progressive.com"
+  #   - "sedgwick.com"
+
+# HOW - Analysis specification
+analysis_spec: "insurance_claims_qualification"  # References configs/specs/analysis/insurance_claims_qualification.json
+
+# ═══════════════════════════════════════════════════════════════
+# ITERATION SETTINGS
+# ═══════════════════════════════════════════════════════════════
+
+iteration:
+  # Maximum pages to scrape per company (including homepage)
+  max_pages: 11  # 1 homepage + 5 round1 + 5 round2
+
+  # Pages per iteration round (after homepage)
+  pages_per_round: 5
+
+  # Maximum iteration rounds (after homepage)
+  max_rounds: 2
+
+  # Stop early if confidence threshold met
+  confidence_threshold: "high"
+
+# ═══════════════════════════════════════════════════════════════
+# COST & PERFORMANCE
+# ═══════════════════════════════════════════════════════════════
+
+# Maximum spend before stopping (USD)
+max_cost_usd: 50
+
+# Concurrent processing (domains processed in parallel)
+concurrency: 5
+
+# Delay between API calls (ms)
+api_delay_ms: 500
+
+# ═══════════════════════════════════════════════════════════════
+# TEST MODE
+# ═══════════════════════════════════════════════════════════════
+
+# Process only first N domains (for testing)
+test_mode: 5
+
+# Dry run - validate config without making API calls
+dry_run: false
+
+# ═══════════════════════════════════════════════════════════════
+# FIRECRAWL OPTIONS
+# ═══════════════════════════════════════════════════════════════
+
+firecrawl:
+  # Map endpoint limit
+  map_limit: 5000
+
+  # Scrape options
+  scrape:
+    formats:
+      - "markdown"
+    only_main_content: true
+    timeout: 30000
+
+# ═══════════════════════════════════════════════════════════════
+# OUTPUT OPTIONS
+# ═══════════════════════════════════════════════════════════════
+
+output:
+  # Include raw markdown in output (increases file size)
+  include_markdown: false
+
+  # Include map results in output
+  include_map: false
+
+  # Export format
+  format: "csv"  # csv, json, or both

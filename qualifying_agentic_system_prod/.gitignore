@@ -1,0 +1,40 @@
+# Outputs (client-specific results)
+outputs/
+
+# Client input data
+inputs/*.csv
+inputs/**/*.csv
+
+# But keep the inputs directory itself
+!inputs/.gitkeep
+
+# Temp files
+temp/
+*.pyc
+__pycache__/
+.DS_Store
+
+# Environment
+.env
+
+# Client-specific data files
+*.txt
+poka_labs_l1.csv
+large_companies_v10.txt
+
+# Testing outputs and client data
+testing/*/results/
+testing/*/outputs*/
+testing/*/samples/
+
+# Client-specific specs (keep templates and anonymized examples)
+configs/specs/analysis/layerup_*.json
+configs/specs/analysis/poka_*.json
+configs/specs/analysis/datadasher_*.json
+configs/specs/analysis/forge_*.json
+configs/specs/analysis/cat_*.json
+configs/specs/analysis/ct_*.json
+
+# Client-specific run configs
+configs/runs/datadasher_*.yaml
+configs/runs/round_*.yaml
