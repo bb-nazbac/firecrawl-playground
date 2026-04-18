@@ -17,6 +17,7 @@ __pycache__/
 
 # Data files
 *.csv
+*.txt
 !requirements.txt
 
 # Testing outputs
