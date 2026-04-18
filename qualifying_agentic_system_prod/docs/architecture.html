@@ -750,7 +750,7 @@
             <pre><code><span class="code-comment"># Normal Pipeline - High throughput screening</span>
 python -m <span class="code-function">core_openai.pipeline</span> input.csv \
     --spec configs/specs/analysis/example_sap_qualification.json \
-    --client cat \
+    --client example_client \
     --run-name sap_btp_jan13
 
 <span class="code-comment"># Deep Pipeline - Detailed analysis</span>
@@ -992,7 +992,7 @@ python -m <span class="code-function">core_openai_deep.pipeline</span> input.csv
 
             <h3>1. Metadata</h3>
             <pre><code>{
-    <span class="code-string">"spec_name"</span>: <span class="code-string">"cat_sap_qualification"</span>,
+    <span class="code-string">"spec_name"</span>: <span class="code-string">"example_sap_qualification"</span>,
     <span class="code-string">"description"</span>: <span class="code-string">"SAP qualification for manufacturing companies"</span>,
     <span class="code-string">"version"</span>: <span class="code-string">"1.4"</span>,
     <span class="code-string">"critical_questions"</span>: [<span class="code-string">"is_production_oriented"</span>, <span class="code-string">"us_operations"</span>]
@@ -1382,7 +1382,7 @@ export FIRECRAWL_API_KEY=<span class="code-string">"fc-..."</span></code></pre>
 │           └── example_duty_drawback_qualification.json
 │
 ├── <span class="code-function">outputs/</span>                   <span class="code-comment"># Run outputs</span>
-│   ├── cat/                  <span class="code-comment"># Client-specific folders</span>
+│   ├── example_client/                  <span class="code-comment"># Client-specific folders</span>
 │   │   └── run_name_timestamp/
 │   └── example_client/
 │

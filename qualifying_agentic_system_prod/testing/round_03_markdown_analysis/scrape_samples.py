@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Load API key
 from dotenv import load_dotenv
-load_dotenv('/Users/bahaa/Documents/Clients/firecrawl_playground/.env')
+load_dotenv(Path(__file__).parent.parent.parent.parent / '.env')
 
 FIRECRAWL_API_KEY = os.getenv('FIRECRAWL_API_KEY')
 OUTPUT_DIR = Path(__file__).parent / 'samples'

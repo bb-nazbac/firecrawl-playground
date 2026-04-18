@@ -65,11 +65,9 @@ round_01_map_and_homepage_qualification/
 
 ## Dependencies
 
-From `qualifying_agents_prod/testing/round_01_map_endpoint_exploration/`:
+From earlier R&D rounds:
 - Map endpoint integration patterns
 - Language filtering logic
-
-From `search_system_prod/core/`:
 - Cost tracking
 - Progress tracking
 - Spec loader patterns

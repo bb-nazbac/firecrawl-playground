@@ -56,7 +56,7 @@ def apply_classification_rules(answers: Dict, spec: AnalysisSpec) -> tuple[Optio
     if not answers:
         return None, None
 
-    # Support both 'apply_in_order' (CAT spec) and 'rules' (other specs) keys
+    # Support both 'apply_in_order' (legacy format) and 'rules' (current format) keys
     rules = spec.classification_logic.get('apply_in_order', []) or spec.classification_logic.get('rules', [])
     if not rules:
         return None, None

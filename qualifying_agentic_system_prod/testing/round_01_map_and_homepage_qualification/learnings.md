@@ -257,7 +257,7 @@ round_01_map_and_homepage_qualification/
 **Overall Round Confidence: 90%** ⚠️
 
 **Confidence Boosters**:
-- Proven /map endpoint from qualifying_agents_prod (95% reliability)
+- Proven /map endpoint from earlier R&D rounds (95% reliability)
 - Clear classification logic with evidence requirements
 - Iterative approach limits wasted API calls
 
